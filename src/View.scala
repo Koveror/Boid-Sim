@@ -26,7 +26,7 @@ object View extends SimpleSwingApplication {
       
       override def paintComponent(g: Graphics2D) {
         //Draw background
-        g.setColor(new Color(0, 155, 20))
+        g.setColor(new Color(10, 100, 200))
         g.fillRect(0, 0, width, height)
         //Draw simComponents
         g.setColor(new Color(255, 255, 255))
@@ -35,8 +35,10 @@ object View extends SimpleSwingApplication {
       
     }
     
+    //Add components to the window
     contents = canvas
     
+    //Listen to user input here
     listenTo(canvas.mouse.clicks)
     
     reactions += {

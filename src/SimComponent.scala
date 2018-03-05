@@ -1,7 +1,7 @@
 import java.awt.Graphics2D
 import java.awt.geom.Ellipse2D
 
-class SimComponent(pos: Vec) {
+class SimComponent(var pos: Vec) {
   
   val model= {
     //Calculates the position of the bounding box first, then creates the ellipse
@@ -10,6 +10,12 @@ class SimComponent(pos: Vec) {
   
   def getPos = pos
   
+  def setPos(p: Vec) {
+    pos = p
+  }
+  
+  /*Draw this component on the screen by moving it into place and then filling it in.
+   *Finally reset the transform.*/
   def draw(g: Graphics2D) = {
     
     val old = g.getTransform()
@@ -18,6 +24,7 @@ class SimComponent(pos: Vec) {
     g.fill(model)
     
     g.setTransform(old)
+    
   }
   
 }
