@@ -7,16 +7,17 @@ class Boid(p: Vec) extends SimComponent(p) {
   val maxForce = Vec(2, 2)
   val maxSpeed = Vec(2, 2)
   var orientation = Vec(1, 1)  //TODO: Mutable vectors or var?
-  var velocity = Vec(-1, 1)
+  var velocity = Vec(-3, 0)
   
   //Calculates the position of the bounding box first, then creates the ellipse
   val model = {
+    val size = 8
     val polyline = new GeneralPath(Path2D.WIND_NON_ZERO, 10)
-    polyline.moveTo(8 - 8, 0 - 8)
-    polyline.lineTo(16 - 8, 16 - 8)
-    polyline.lineTo(8 - 8, 14 - 8)
-    polyline.lineTo(0 - 8, 16 - 8)
-    polyline.lineTo(8 - 8, 0 - 8)
+    polyline.moveTo(-size, -size)
+    polyline.lineTo(size, 0)
+    polyline.lineTo(-size, size)
+    polyline.lineTo(-2.0/3.0 * size, 0)
+    polyline.closePath()
     polyline
   }
   
@@ -31,6 +32,7 @@ class Boid(p: Vec) extends SimComponent(p) {
     val old = g.getTransform()
     
     g.translate(pos.x, pos.y)
+    g.rotate(velocity.angle)
     g.fill(this.model)
     
     g.setTransform(old)
