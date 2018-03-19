@@ -4,11 +4,17 @@ case class Vec(x: Double, y:Double) {
   
   def length = hypot(x, y)
   
-  def angle = atan(y / x)
+  def angle = atan2(y, x)
+  
+  def normalize = if(max(x, y) != 0) this / max(x, y) else this
   
   def +(another: Vec) = Vec(this.x + another.x, this.y + another.y)
   
   def *(another: Vec) = Vec(this.x * another.x, this.y * another.y)
+  
+  def /(scalar: Double) = Vec(this.x / scalar, this.y / scalar)
+  
+  def *(scalar: Double) = Vec(this.x * scalar, this.y * scalar)
   
   //Truncate the length of this vector with another vectors length, for example maxVelocity.
   def truncateWith(another: Vec): Vec = {

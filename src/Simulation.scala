@@ -13,7 +13,7 @@ class Simulation {
   
   /*Move simulation along by one turn*/
   def step() {
-    newComponents.foreach(_.act)
+    newComponents.foreach(_.act(this))
   }
   
   /*Draw the simulation state on the given canvas*/

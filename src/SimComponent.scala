@@ -5,7 +5,7 @@ abstract class SimComponent(var pos: Vec) {
   
   def getPos = pos
 
-  def act: Unit
+  def act(s: Simulation): Unit
   
   def draw(g: Graphics2D): Unit
   
