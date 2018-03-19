@@ -4,6 +4,7 @@ import java.awt.Graphics2D
 class Simulation {
   
   val newComponents = Buffer[SimComponent]()
+  val oldComponents = Buffer[SimComponent]()
   
   /*Add a new SimComponent to the simulation*/
   def addComponent(c: SimComponent) {

@@ -22,7 +22,7 @@ object View extends SimpleSwingApplication {
     preferredSize = new Dimension(width, height)
     maximumSize   = new Dimension(width, height)
     
-    val canvas = new Panel {
+    val simSpace = new Panel {
       
       override def paintComponent(g: Graphics2D) {
         //Draw background
@@ -36,10 +36,10 @@ object View extends SimpleSwingApplication {
     }
     
     //Add components to the window
-    contents = canvas
+    contents = simSpace
     
     //Listen to user input here
-    listenTo(canvas.mouse.clicks)
+    listenTo(simSpace.mouse.clicks)
     
     reactions += {
       case scala.swing.event.MousePressed(src, point, _, _, _) => sim.addComponent(new SimComponent(Vec(point.x, point.y)))
@@ -48,7 +48,7 @@ object View extends SimpleSwingApplication {
     val listener = new ActionListener() {
       def actionPerformed(e: java.awt.event.ActionEvent) = {
         sim.step()
-        canvas.repaint()
+        simSpace.repaint()
       }
     }
     
