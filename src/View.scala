@@ -42,7 +42,7 @@ object View extends SimpleSwingApplication {
     listenTo(simSpace.mouse.clicks)
     
     reactions += {
-      case scala.swing.event.MousePressed(src, point, _, _, _) => sim.addComponent(new SimComponent(Vec(point.x, point.y)))
+      case scala.swing.event.MousePressed(src, point, _, _, _) => sim.addComponent(new Boid(Vec(point.x, point.y)))
     }
     
     val listener = new ActionListener() {
