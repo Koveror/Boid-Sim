@@ -18,15 +18,6 @@ case class Vec(x: Double, y:Double) {
   
   def *(scalar: Double) = Vec(this.x * scalar, this.y * scalar)
   
-  //Truncate the length of this vector with another vectors length, for example maxVelocity.
-  def truncateWith(another: Vec): Vec = {
-    val newAngle = this.angle
-    val newLength = another.length
-    val newX = newLength * cos(newAngle)
-    val newY = newLength * sin(newAngle)
-    return Vec(newX, newY)  //TODO: Functional or with side-effects?
-  }
-  
   //Truncate vector length with a scalar. If scalar is larger than current lenght, do nothing.
   def truncateWith(scalar: Double): Vec = {
     val newAngle = this.angle

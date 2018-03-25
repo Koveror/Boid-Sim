@@ -1,5 +1,7 @@
 import java.awt.Graphics2D
+import scala.swing._
 import java.awt.geom.{GeneralPath, Path2D}
+import java.awt.geom.Rectangle2D
 
 class Boid(p: Vec, v: Vec, o: Vec) extends SimComponent(p) {
   
@@ -9,8 +11,8 @@ class Boid(p: Vec, v: Vec, o: Vec) extends SimComponent(p) {
   val orientation = o  //TODO: Mutable vectors or var?
   val velocity = v
   val behavior = new Seek
+  val drawSector = true
   
-  //Calculates the position of the bounding box first, then creates the ellipse
   val model = {
     val size = 8
     val polyline = new GeneralPath(Path2D.WIND_NON_ZERO, 10)
@@ -20,6 +22,14 @@ class Boid(p: Vec, v: Vec, o: Vec) extends SimComponent(p) {
     polyline.lineTo(-2.0/3.0 * size, 0)
     polyline.closePath()
     polyline
+  }
+  
+  /*Boid can see SimComponents within it's rectangular view.*/
+  val sector = {
+    val width = 24
+    val length = 128
+    val rectangle = new Rectangle2D.Double(0, -width / 2, length, width)
+    rectangle
   }
   
   def act(s: Simulation) {
@@ -41,9 +51,15 @@ class Boid(p: Vec, v: Vec, o: Vec) extends SimComponent(p) {
     
     val old = g.getTransform()
     
+    g.setColor(new Color(255, 255, 255))
     g.translate(pos.x, pos.y)
     g.rotate(velocity.angle)
     g.fill(this.model)
+    
+    if(drawSector) {
+      g.setColor(new Color(255, 255, 255, 50))
+      g.fill(this.sector)
+    }
     
     g.setTransform(old)
     
