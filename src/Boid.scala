@@ -1,13 +1,13 @@
 import java.awt.Graphics2D
 import java.awt.geom.{GeneralPath, Path2D}
 
-class Boid(p: Vec) extends SimComponent(p) {
+class Boid(p: Vec, v: Vec, o: Vec) extends SimComponent(p) {
   
   val mass = 1.0
   val maxForce = Vec(2, 2)
   val maxSpeed = Vec(2, 2)
-  var orientation = Vec(1, 1)  //TODO: Mutable vectors or var?
-  var velocity = Vec(-3, 0)
+  val orientation = o  //TODO: Mutable vectors or var?
+  val velocity = v
   
   //Calculates the position of the bounding box first, then creates the ellipse
   val model = {
@@ -22,7 +22,9 @@ class Boid(p: Vec) extends SimComponent(p) {
   }
   
   def act(s: Simulation) {
-    pos = pos + velocity
+    val newPos = pos + velocity
+    val newComponent = new Boid(newPos, velocity * 0.9, orientation)
+    s.addComponent(newComponent)
   }
   
   /*Draw this component on the screen by moving it into place and then filling it in. 

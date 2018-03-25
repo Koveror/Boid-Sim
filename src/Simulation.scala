@@ -3,8 +3,13 @@ import java.awt.Graphics2D
 
 class Simulation {
   
-  val newComponents = Buffer[SimComponent]()
-  val oldComponents = Buffer[SimComponent]()
+  //FIXME: Vars to mutable buffers?
+  var newComponents = Buffer[SimComponent]()
+  var oldComponents = Buffer[SimComponent]()
+  
+  def removeComponent(c: SimComponent) {
+    newComponents -= c
+  }
   
   /*Add a new SimComponent to the simulation*/
   def addComponent(c: SimComponent) {
@@ -13,12 +18,14 @@ class Simulation {
   
   /*Move simulation along by one turn*/
   def step() {
-    newComponents.foreach(_.act(this))
+    newComponents = Buffer[SimComponent]()
+    oldComponents.foreach(_.act(this))  //FIXME: Nullptr?
+    oldComponents = newComponents
   }
   
-  /*Draw the simulation state on the given canvas*/
+  /*Draw the simulation state on the given simSpace*/
   def draw(g: Graphics2D) {
-    newComponents.foreach(_.draw(g))  //FIXME: Use old and new buffer
+    oldComponents.foreach(_.draw(g))
   }
   
 }

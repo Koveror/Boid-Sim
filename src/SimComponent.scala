@@ -1,7 +1,7 @@
 import java.awt.Graphics2D
 import java.awt.geom.Ellipse2D
 
-abstract class SimComponent(var pos: Vec) {
+abstract class SimComponent(val pos: Vec) {
   
   def getPos = pos
 
