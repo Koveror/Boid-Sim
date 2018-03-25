@@ -10,7 +10,11 @@ class Boid(p: Vec, v: Vec, o: Vec) extends SimComponent(p) {
   val maxSpeed = 20.0
   val orientation = o  //TODO: Mutable vectors or var?
   val velocity = v
-  val behavior = new Seek
+  
+  //val seek: Behavior = new Seek
+  val obs: Behavior = new ObstacleAvoidance
+  val behaviors = Array(obs)
+  
   val drawSector = true
   
   val model = {
@@ -34,8 +38,11 @@ class Boid(p: Vec, v: Vec, o: Vec) extends SimComponent(p) {
   
   def act(s: Simulation) {
     
-    val steeringForce = behavior.getSteeringVector(s, this)
-    
+    val steeringForces = for {
+      behavior <- behaviors
+    } yield behavior.getSteeringVector(s, this)
+    val steeringForce = steeringForces.fold(Vec(0, 0))(_ + _)
+    //println("SF: " + steeringForce)
     val accerelation = steeringForce / mass
     val newVelocity = (velocity + accerelation).truncateWith(maxSpeed)
     
