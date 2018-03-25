@@ -3,11 +3,12 @@ import java.awt.geom.{GeneralPath, Path2D}
 
 class Boid(p: Vec, v: Vec, o: Vec) extends SimComponent(p) {
   
-  val mass = 1.0
-  val maxForce = Vec(2, 2)
-  val maxSpeed = Vec(2, 2)
+  val mass = 20.0
+  val maxForce = 20.0
+  val maxSpeed = 20.0
   val orientation = o  //TODO: Mutable vectors or var?
   val velocity = v
+  val behavior = new Seek
   
   //Calculates the position of the bounding box first, then creates the ellipse
   val model = {
@@ -22,8 +23,15 @@ class Boid(p: Vec, v: Vec, o: Vec) extends SimComponent(p) {
   }
   
   def act(s: Simulation) {
-    val newPos = pos + velocity
-    val newComponent = new Boid(newPos, velocity * 0.9, orientation)
+    
+    val steeringForce = behavior.getSteeringVector(s, this)
+    
+    val accerelation = steeringForce / mass
+    val newVelocity = (velocity + accerelation).truncateWith(maxSpeed)
+    
+    val newPos = pos + newVelocity
+    val newComponent = new Boid(newPos, newVelocity, orientation)
+    
     s.addComponent(newComponent)
   }
   
