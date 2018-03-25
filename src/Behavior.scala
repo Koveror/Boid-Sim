@@ -6,8 +6,7 @@ abstract class Behavior {
 
 class Seek extends Behavior {
   def getSteeringVector(s: Simulation, b: Boid): Vec = {
-    val target = Vec(200, 200)  //Position of target
-    val desiredVel = (target - b.pos).normalize * b.maxSpeed
+    val desiredVel = (s.target.pos - b.pos).normalize * b.maxSpeed
     val steering = desiredVel - b.velocity
     val steeringForce = steering.truncateWith(b.maxForce)
     return steeringForce
@@ -16,8 +15,7 @@ class Seek extends Behavior {
 
 class Flee extends Behavior {
   def getSteeringVector(s: Simulation, b: Boid): Vec = {
-    val target = Vec(200, 200)  //Position of target
-    val desiredVel = (b.pos - target).normalize * b.maxSpeed
+    val desiredVel = (b.pos - s.target.pos).normalize * b.maxSpeed
     val steering = desiredVel - b.velocity
     val steeringForce = steering.truncateWith(b.maxForce)
     return steeringForce

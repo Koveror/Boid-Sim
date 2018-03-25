@@ -7,6 +7,9 @@ class Simulation {
   var newComponents = Buffer[SimComponent]()
   var oldComponents = Buffer[SimComponent]()
   
+  val target = new Target(Vec(100, 300))
+  oldComponents += target
+  
   def removeComponent(c: SimComponent) {
     newComponents -= c
   }
