@@ -7,17 +7,19 @@ class Boid(p: Vec, v: Vec, o: Vec) extends SimComponent(p) {
   
   val mass = 20.0
   val maxForce = 20.0
-  val maxSpeed = 20.0
+  val maxSpeed = 10.0
   val orientation = o  //TODO: Mutable vectors or var?
-  val velocity = v
+  override def velocity = v
   val neighborhood = 40.0  //The radius of neighborhood
   
   //val seek: Behavior = new Seek
   val sep = new Separation
+  val coh = new Cohesion
+  val ali = new Alignment
   //val obs: Behavior = new ObstacleAvoidance
-  val behaviors = Array(sep)
+  val behaviors = Array(sep, ali)
   
-  val drawSector = true
+  val drawSector = false
   
   val model = {
     val size = 8
@@ -45,9 +47,8 @@ class Boid(p: Vec, v: Vec, o: Vec) extends SimComponent(p) {
     } yield behavior.getSteeringVector(s, this)
     val steeringForce = steeringForces.fold(Vec(0, 0))(_ + _)
     //println("SF: " + steeringForce)
-    val accerelation = steeringForce / mass
-    val newVelocity = (velocity + accerelation).truncateWith(maxSpeed)
-    
+    val acceleration = steeringForce / mass
+    val newVelocity = (velocity + acceleration).truncateWith(maxSpeed)
     val newPos = pos + newVelocity
     val newComponent = new Boid(newPos, newVelocity, orientation)
     
