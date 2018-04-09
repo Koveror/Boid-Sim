@@ -7,10 +7,10 @@ object View extends SimpleSwingApplication {
   //Define constants here
   val height = 400
   val width = 600
-  val refreshRate = 18  //6ms
+  val refreshRate = 6  //6ms
   
   //Define variables here
-  var sim = new Simulation
+  var sim = new Simulation(width, height)
   
   //Main frame contains all the other components
   def top = new MainFrame {

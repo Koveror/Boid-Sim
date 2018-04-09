@@ -53,7 +53,7 @@ class Separation extends Behavior {
     val steeringVectors = for {
       boid <- nearbyBoids
       val offsetVector = (b.pos - boid.pos).normalize
-      val weight = 1.0 / max(0.001,(b.pos - boid.pos).length)
+      val weight = 1.0 / max(0.00000001,(b.pos - boid.pos).length)
       val steeringVector = offsetVector * weight
     } yield steeringVector
     

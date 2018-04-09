@@ -1,7 +1,7 @@
 import scala.collection.mutable.Buffer
 import java.awt.Graphics2D
 
-class Simulation {
+class Simulation(val width: Int, val height: Int) {
   
   //FIXME: Vars to mutable buffers?
   var newComponents = Buffer[SimComponent]()
@@ -26,7 +26,8 @@ class Simulation {
   /*Move simulation along by one turn*/
   def step() {
     newComponents = Buffer[SimComponent]()
-    oldComponents.foreach(_.act(this))  //FIXME: Nullptr?
+    oldComponents.filter(x => (x.pos.x >= 0 && x.pos.x <= width) && (x.pos.y >= 0 && x.pos.y <= height))
+                 .foreach(_.act(this))  //FIXME: Nullptr?
     oldComponents = newComponents
   }
   
