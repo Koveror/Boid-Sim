@@ -10,10 +10,12 @@ class Boid(p: Vec, v: Vec, o: Vec) extends SimComponent(p) {
   val maxSpeed = 20.0
   val orientation = o  //TODO: Mutable vectors or var?
   val velocity = v
+  val neighborhood = 40.0  //The radius of neighborhood
   
   //val seek: Behavior = new Seek
-  val obs: Behavior = new ObstacleAvoidance
-  val behaviors = Array(obs)
+  val sep = new Separation
+  //val obs: Behavior = new ObstacleAvoidance
+  val behaviors = Array(sep)
   
   val drawSector = true
   

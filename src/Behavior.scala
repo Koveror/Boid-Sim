@@ -1,4 +1,5 @@
-
+import java.awt.Graphics2D
+import scala.math._
 
 abstract class Behavior {
   def getSteeringVector(s: Simulation, b: Boid): Vec
@@ -22,6 +23,24 @@ class Flee(target: SimComponent) extends Behavior {
   }
 }
 
+class Separation extends Behavior {
+  def getSteeringVector(s: Simulation, b: Boid): Vec = {
+    val otherBoids = s.oldComponents.filter(x => x.isInstanceOf[Boid])
+    val nearbyBoids = otherBoids.filter(x => (x.pos - b.pos).length < b.neighborhood)
+    
+    val steeringVectors = for {
+      boid <- nearbyBoids
+      val offsetVector = (b.pos - boid.pos).normalize
+      val weight = 1.0 / max(0.001,(b.pos - boid.pos).length) //FIXME: DivideByZero?
+      val steeringVector = offsetVector * weight
+    } yield steeringVector
+    
+    val sum = steeringVectors.fold(Vec(0, 0))(_ + _).truncateWith(b.maxForce)
+    return sum
+  }
+}
+
+/*TODO: Checking for obstacles in front*/
 class ObstacleAvoidance extends Behavior {
   
   /*Calculate a sum vector for fleeing from all the obstacles in sight*/
@@ -31,7 +50,6 @@ class ObstacleAvoidance extends Behavior {
     //FIXME: Sector is not in place when checking
     val obstaclesInSight = obstacles.filter(x => b.sector.contains(x.pos.x, x.pos.y))
     //println("Size of obstacles: " + obstaclesInSight.size)
-    
     //Create a new flee behavior for each obstacle and get vectors
     val steeringVectors = for {
       obs <- obstaclesInSight
