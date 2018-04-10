@@ -17,7 +17,7 @@ class Boid(p: Vec, v: Vec, o: Vec) extends SimComponent(p) {
   val coh = new Cohesion
   val ali = new Alignment
   //val obs: Behavior = new ObstacleAvoidance
-  val behaviors = Array(sep, ali)
+  val behaviors = Array(sep, ali, coh)
   
   val drawSector = false
   
@@ -47,6 +47,7 @@ class Boid(p: Vec, v: Vec, o: Vec) extends SimComponent(p) {
     } yield behavior.getSteeringVector(s, this)
     val steeringForce = steeringForces.fold(Vec(0, 0))(_ + _)
     //println("SF: " + steeringForce)
+    //println("Is it: " + javax.swing.SwingUtilities.isEventDispatchThread)
     val acceleration = steeringForce / mass
     val newVelocity = (velocity + acceleration).truncateWith(maxSpeed)
     val newPos = pos + newVelocity

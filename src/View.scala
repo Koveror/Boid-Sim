@@ -7,7 +7,7 @@ object View extends SimpleSwingApplication {
   //Define constants here
   val height = 400
   val width = 600
-  val refreshRate = 6  //6ms
+  val refreshRate = 32  //6ms
   
   //Define variables here
   var sim = new Simulation(width, height)
@@ -45,6 +45,7 @@ object View extends SimpleSwingApplication {
       case scala.swing.event.MousePressed(src, point, _, _, _) => sim.addComponent(new Boid(Vec(point.x, point.y), Vec(1, 1), Vec(1, 1)))
     }
     
+    //Listen to action events coming in
     val listener = new ActionListener() {
       def actionPerformed(e: java.awt.event.ActionEvent) = {
         sim.step()
@@ -52,6 +53,7 @@ object View extends SimpleSwingApplication {
       }
     }
     
+    //Timer sends an action event to action listener at the rate of refresh rate
     val timer = new javax.swing.Timer(refreshRate, listener)
     timer.start()
   }
