@@ -9,9 +9,16 @@ class Obstacle(p: Vec) extends SimComponent(p) {
     ellipse
   }
   
-  /*Keep component in simulation by adding it to newComponents*/
+  def getVel: Vec = {
+    return Vec(0, 0)
+  }
+  
+  def getPos: Vec = {
+    return p
+  }
+
   def act(s: Simulation) {
-    s.addComponent(this)
+    //Do nothing
   }
   
   def draw(g: Graphics2D) {

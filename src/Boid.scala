@@ -8,16 +8,19 @@ class Boid(p: Vec, v: Vec, o: Vec) extends SimComponent(p) {
   val mass = 20.0
   val maxForce = 20.0
   val maxSpeed = 10.0
-  val orientation = o  //TODO: Mutable vectors or var?
-  override def velocity = v
   val neighborhood = 40.0  //The radius of neighborhood
+  
+  var oldPosition = p
+  var newPosition = p
+  var orientation = o  //TODO: Mutable vectors or var?
+  var velocity = v
   
   //val seek: Behavior = new Seek
   val sep = new Separation
-  val coh = new Cohesion
-  val ali = new Alignment
+  //val coh = new Cohesion
+  //val ali = new Alignment
   //val obs: Behavior = new ObstacleAvoidance
-  val behaviors = Array(sep, ali, coh)
+  val behaviors = Array(sep)
   
   val drawSector = false
   
@@ -40,6 +43,14 @@ class Boid(p: Vec, v: Vec, o: Vec) extends SimComponent(p) {
     rectangle
   }
   
+  def getVel: Vec = {
+    return velocity
+  }
+  
+  def getPos: Vec = {
+    return oldPosition
+  }
+  
   def act(s: Simulation) {
     
     val steeringForces = for {
@@ -49,11 +60,11 @@ class Boid(p: Vec, v: Vec, o: Vec) extends SimComponent(p) {
     //println("SF: " + steeringForce)
     //println("Is it: " + javax.swing.SwingUtilities.isEventDispatchThread)
     val acceleration = steeringForce / mass
-    val newVelocity = (velocity + acceleration).truncateWith(maxSpeed)
-    val newPos = pos + newVelocity
-    val newComponent = new Boid(newPos, newVelocity, orientation)
+    velocity = (velocity + acceleration).truncateWith(maxSpeed)
+    newPosition = oldPosition + velocity
     
-    s.addComponent(newComponent)
+    oldPosition = newPosition
+
   }
   
   /*Draw this component on the screen by moving it into place and then filling it in. 
@@ -63,7 +74,7 @@ class Boid(p: Vec, v: Vec, o: Vec) extends SimComponent(p) {
     val old = g.getTransform()
     
     g.setColor(new Color(255, 255, 255))
-    g.translate(pos.x, pos.y)
+    g.translate(oldPosition.x, oldPosition.y)
     g.rotate(velocity.angle)
     g.fill(this.model)
     

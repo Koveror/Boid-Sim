@@ -9,8 +9,16 @@ class Target(p: Vec) extends SimComponent(p) {
     ellipse
   }
   
+  def getVel: Vec = {
+    return Vec(0, 0)
+  }
+  
+  def getPos: Vec = {
+    return p
+  }
+  
   def act(s: Simulation) {
-    s.addComponent(this)
+    //Do nothing
   }
   
   def draw(g: Graphics2D) {
