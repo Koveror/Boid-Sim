@@ -9,6 +9,7 @@ class Boid(p: Vec, v: Vec, o: Vec) extends SimComponent(p) {
   val maxForce = 20.0
   val maxSpeed = 10.0
   val neighborhood = 40.0  //The radius of neighborhood
+  val zeroVector = new Vec(0, 0)
   
   var oldPosition = p
   var newPosition = p
@@ -17,10 +18,10 @@ class Boid(p: Vec, v: Vec, o: Vec) extends SimComponent(p) {
   
   //val seek: Behavior = new Seek
   val sep = new Separation
-  //val coh = new Cohesion
-  //val ali = new Alignment
+  val coh = new Cohesion
+  val ali = new Alignment
   //val obs: Behavior = new ObstacleAvoidance
-  val behaviors = Array(sep)
+  val behaviors = Array(sep, coh, ali)
   
   val drawSector = false
   
@@ -56,11 +57,13 @@ class Boid(p: Vec, v: Vec, o: Vec) extends SimComponent(p) {
     val steeringForces = for {
       behavior <- behaviors
     } yield behavior.getSteeringVector(s, this)
-    val steeringForce = steeringForces.fold(Vec(0, 0))(_ + _)
+    val steeringForce = steeringForces.fold(zeroVector)(_ + _)
     //println("SF: " + steeringForce)
     //println("Is it: " + javax.swing.SwingUtilities.isEventDispatchThread)
     val acceleration = steeringForce / mass
-    velocity = (velocity + acceleration).truncateWith(maxSpeed)
+    //velocity = (velocity + acceleration).truncateWith(maxSpeed)
+    velocity += acceleration
+    velocity.truncateWith(maxSpeed)
     newPosition = oldPosition + velocity
     
     oldPosition = newPosition

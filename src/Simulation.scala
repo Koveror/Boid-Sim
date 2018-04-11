@@ -4,13 +4,14 @@ import java.awt.Graphics2D
 class Simulation(val width: Int, val height: Int) {
   
   val components = Buffer[SimComponent]()
+  val zeroVector = new Vec(0, 0)
   
   //Initialize simulation
-  val target = new Target(Vec(100, 300))
+  val target = new Target(new Vec(100, 300))
   components += target
-  components += new Obstacle(Vec(100, 100))
-  components += new Obstacle(Vec(150, 250))
-  components += new Obstacle(Vec(400, 50))
+  components += new Obstacle(new Vec(100, 100))
+  components += new Obstacle(new Vec(150, 250))
+  components += new Obstacle(new Vec(400, 50))
   
   def removeComponent(c: SimComponent) {
     components -= c

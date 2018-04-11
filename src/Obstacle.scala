@@ -3,6 +3,8 @@ import java.awt.geom.Ellipse2D
 
 class Obstacle(p: Vec) extends SimComponent(p) {
   
+  val v = new Vec(0, 0)
+  
   val model = {
     val size = 8
     val ellipse = new Ellipse2D.Double(-size, -size, 2*size, 2*size)
@@ -10,7 +12,7 @@ class Obstacle(p: Vec) extends SimComponent(p) {
   }
   
   def getVel: Vec = {
-    return Vec(0, 0)
+    return v
   }
   
   def getPos: Vec = {
