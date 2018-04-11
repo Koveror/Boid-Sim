@@ -10,7 +10,7 @@ abstract class Behavior {
 class Seek(target: SimComponent) extends Behavior {
   def getSteeringVector(s: Simulation, b: Boid): Vec = {
     val desiredVel = (target.getPos - b.getPos).normalized * b.maxSpeed
-    val steering = desiredVel - b.velocity
+    val steering = desiredVel - b.getVel
     val steeringForce = steering.truncatedWith(b.maxForce)
     return steeringForce
   }
@@ -19,7 +19,7 @@ class Seek(target: SimComponent) extends Behavior {
 class Flee(target: SimComponent) extends Behavior {
   def getSteeringVector(s: Simulation, b: Boid): Vec = {
     val desiredVel = (b.getPos - target.getPos).normalized * b.maxSpeed
-    val steering = desiredVel - b.velocity
+    val steering = desiredVel - b.getVel
     val steeringForce = steering.truncatedWith(b.maxForce)
     return steeringForce
   }
@@ -73,7 +73,7 @@ class Alignment extends Behavior {
       return s.zeroVector
     } else {
       val averageVel = nearbyBoids.map(x => x.getVel).fold(s.zeroVector)(_ + _) / nearbyBoids.size
-      val steeringVector = (b.velocity - averageVel).truncatedWith(b.maxForce)
+      val steeringVector = (b.getVel - averageVel).truncatedWith(b.maxForce)
       return steeringVector
     }
     

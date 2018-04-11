@@ -11,10 +11,10 @@ class Boid(p: Vec, v: Vec, o: Vec) extends SimComponent(p) {
   val neighborhood = 40.0  //The radius of neighborhood
   val zeroVector = new Vec(0, 0)
   
-  var oldPosition = p
-  var newPosition = p
-  var orientation = o  //TODO: Mutable vectors or var?
-  var velocity = v
+  private var oldPosition = p
+  private var newPosition = p
+  private var orientation = o
+  private var velocity = v
   
   //val seek: Behavior = new Seek
   val sep = new Separation
@@ -61,9 +61,7 @@ class Boid(p: Vec, v: Vec, o: Vec) extends SimComponent(p) {
     //println("SF: " + steeringForce)
     //println("Is it: " + javax.swing.SwingUtilities.isEventDispatchThread)
     val acceleration = steeringForce / mass
-    //velocity = (velocity + acceleration).truncateWith(maxSpeed)
-    velocity += acceleration
-    velocity.truncateWith(maxSpeed)
+    velocity = (velocity + acceleration).truncatedWith(maxSpeed)
     newPosition = oldPosition + velocity
     
     oldPosition = newPosition
