@@ -6,8 +6,9 @@ import scala.collection.mutable.Buffer
 
 class Boid(p: Vec, v: Vec, o: Vec) extends SimComponent(p) {
   
-  val mass = 20.0
+  val mass = 80.0
   val maxForce = 20.0
+  val minSpeed = 1.0
   val maxSpeed = 10.0
   val neighborhood = 40.0  //The radius of neighborhood
   val zeroVector = new Vec(0, 0)
@@ -22,7 +23,7 @@ class Boid(p: Vec, v: Vec, o: Vec) extends SimComponent(p) {
   val coh = new Cohesion
   val ali = new Alignment
   //val obs: Behavior = new ObstacleAvoidance
-  val behaviors: Buffer[Behavior] = Buffer(sep)
+  val behaviors: Buffer[Behavior] = Buffer(sep, coh, ali)
   
   val drawSector = false
   
@@ -72,7 +73,10 @@ class Boid(p: Vec, v: Vec, o: Vec) extends SimComponent(p) {
     //println("SF: " + steeringForce)
     //println("Is it: " + javax.swing.SwingUtilities.isEventDispatchThread)
     val acceleration = steeringForce / mass
+    
     velocity = (velocity + acceleration).truncatedWith(maxSpeed)
+    velocity = velocity.makeLength(minSpeed)
+    
     newPosition = oldPosition + velocity
 
   }
@@ -92,6 +96,8 @@ class Boid(p: Vec, v: Vec, o: Vec) extends SimComponent(p) {
       g.setColor(new Color(255, 255, 255, 50))
       g.fill(this.sector)
     }
+    
+    g.setColor(new Color(255, 255, 255))
     
     g.setTransform(old)
     
