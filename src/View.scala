@@ -1,5 +1,6 @@
 import scala.swing._
 import java.awt.event.ActionListener
+import java.awt.Toolkit
 
 /*This is the view class responsible for drawing the simulation on screen.*/
 object View extends SimpleSwingApplication {
@@ -50,6 +51,7 @@ object View extends SimpleSwingApplication {
       def actionPerformed(e: java.awt.event.ActionEvent) = {
         sim.step()
         simSpace.repaint()
+        Toolkit.getDefaultToolkit().sync()  //Flush the graphics buffer to avoid stuttering when mouse is stationary
       }
     }
     
