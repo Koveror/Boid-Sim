@@ -1,4 +1,5 @@
 import java.awt.Graphics2D
+import java.awt.geom.{GeneralPath, Path2D}
 import scala.math._
 
 /*Boids have a list of behaviors that they follow. Each behavior gives a steering vector
@@ -105,24 +106,19 @@ class Alignment extends Behavior {
   def getType = 5
 }
 
-/*TODO: Checking for obstacles in front*/
 class ObstacleAvoidance extends Behavior {
   
-  /*Obstacle avoidance makes boid flee from obstacles in front, avoiding them*/
+  /*Obstacle avoidance makes boids flee from obstacles in front, avoiding them*/
   def getSteeringVector(s: Simulation, b: Boid): Vec = {
-    val obstacles = s.obstacles
-    //FIXME: Sector is not in place when checking
-    val obstaclesInSight = obstacles.filter(x => b.sector.contains(x.getPos.x, x.getPos.y))
-    //println("Size of obstacles: " + obstaclesInSight.size)
-    //Create a new flee behavior for each obstacle and get vectors
-    val steeringVectors = for {
-      obs <- obstaclesInSight
-      val flee = new Flee(obs)
-    } yield flee.getSteeringVector(s, b)
-    
-    //Sum the vectors together, truncate with maxForce and then return it
-    val sum = steeringVectors.fold(s.zeroVector)(_ + _).truncatedWith(b.maxForce)
-    return sum
+    val obstaclesInSight = s.obstacles.filter(x => b.buildSector.contains(x.getPos.x, x.getPos.y))
+    if(obstaclesInSight.nonEmpty) {
+      val mostThreatening = obstaclesInSight.minBy(x => (b.getPos - x.getPos).length)
+      val flee = new Flee(mostThreatening)
+      val steeringVector = flee.getSteeringVector(s, b)
+      return steeringVector
+    } else {
+      return s.zeroVector
+    }
   }
   
   def getType = 6

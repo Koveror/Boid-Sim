@@ -3,6 +3,7 @@ import scala.swing._
 import java.awt.geom.{GeneralPath, Path2D}
 import java.awt.geom.Rectangle2D
 import scala.collection.mutable.Buffer
+import scala.math._
 
 /*Boid is a simple vehicle that moves around in the simulation each time the move() method is called.
  *New velocity and new position are calculated when the act() method is called.
@@ -16,7 +17,7 @@ class Boid(p: Vec, v: Vec, o: Vec) extends SimComponent(p) {
   val minSpeed = 1.0
   val maxSpeed = 10.0
   val neighborhood = 40.0  //The radius of neighborhood
-  val drawSector = false
+  val drawSector = true
   
   /*Variables*/
   private var oldPosition = p
@@ -29,8 +30,8 @@ class Boid(p: Vec, v: Vec, o: Vec) extends SimComponent(p) {
   val sep = new Separation
   val coh = new Cohesion
   val ali = new Alignment
-  //val obs: Behavior = new ObstacleAvoidance
-  val behaviors: Buffer[Behavior] = Buffer(sep, coh, ali)
+  val obs = new ObstacleAvoidance
+  val behaviors: Buffer[Behavior] = Buffer(sep, coh, ali, obs)
   
   /*Model is a polyline in the shape of an arrow*/
   val model = {
@@ -45,11 +46,26 @@ class Boid(p: Vec, v: Vec, o: Vec) extends SimComponent(p) {
   }
   
   /*Boid can see SimComponents within it's rectangular view.*/
-  val sector = {
-    val width = 24
-    val length = 128
-    val rectangle = new Rectangle2D.Double(0, -width / 2, length, width)
-    rectangle
+  def buildSector: GeneralPath =  {
+    
+    val front = getVel.normalized
+    val left = front.rotate(Pi / 2)
+    val right = front.rotate(-Pi / 2)
+    val leftBottom = getPos + (left * 20)
+    val rightBottom = getPos + (right * 20)
+    val leftTop = getPos + (left * 20) + (front * 80)
+    val rightTop = getPos + (right * 20) + (front * 80)
+    
+    //println("LB: " + leftBottom + ", LT: " + leftTop + ", RT: " + rightTop + ", RB: " + rightBottom)
+    
+    val polyline = new GeneralPath(Path2D.WIND_NON_ZERO, 10)
+    polyline.moveTo(leftBottom.x, leftBottom.y)
+    polyline.lineTo(leftTop.x, leftTop.y)
+    polyline.lineTo(rightTop.x, rightTop.y)
+    polyline.lineTo(rightBottom.x, rightBottom.y)
+    polyline.closePath()
+    return polyline
+    
   }
   
   /*Remove all behaviors that are of the same type as b*/
@@ -106,15 +122,16 @@ class Boid(p: Vec, v: Vec, o: Vec) extends SimComponent(p) {
     g.rotate(velocity.angle)
     g.fill(this.model)
     
+    //Sector is drawn in global coordinates to allow for collision detection
+    g.setTransform(old)
+    g.setColor(new Color(255, 255, 255))
+    
     if(drawSector) {
       g.setColor(new Color(255, 255, 255, 50))
-      g.fill(this.sector)
+      g.fill(this.buildSector)
     }
     
     g.setColor(new Color(255, 255, 255))
-    
-    g.setTransform(old)
-    
   }
   
 }

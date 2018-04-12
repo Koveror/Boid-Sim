@@ -1,11 +1,11 @@
 import scala.math._
 
 /*Vec is a class that implements basic vector operations. Vec objects are immutable*/
-class Vec(val x: Double, val y:Double) {
+case class Vec(val x: Double, val y:Double) {
   
   def length: Double = hypot(x, y)
   
-  def angle: Double = atan2(y, x)
+  def angle: Double = atan2(y, x)  //In radians
   
   def normalized: Vec = if(this.length != 0) this / abs(this.length) else this
   
@@ -32,6 +32,15 @@ class Vec(val x: Double, val y:Double) {
   def makeLength(scalar: Double): Vec = {
     val newAngle = this.angle
     val newLength = max(scalar, this.length)
+    val newX = newLength * cos(newAngle)
+    val newY = newLength * sin(newAngle)
+    return new Vec(newX, newY)
+  }
+  
+  /*Rotate this vector by adding angle to current angle (in radians)*/
+  def rotate(angle: Double): Vec = {
+    val newAngle = this.angle + angle
+    val newLength = this.length
     val newX = newLength * cos(newAngle)
     val newY = newLength * sin(newAngle)
     return new Vec(newX, newY)
