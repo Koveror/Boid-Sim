@@ -11,6 +11,10 @@ class Target(p: Vec) extends SimComponent(p) {
     ellipse
   }
   
+  def move() {
+    
+  }
+  
   def getVel: Vec = {
     return v
   }

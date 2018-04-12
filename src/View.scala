@@ -10,7 +10,7 @@ object View extends SimpleSwingApplication {
   val refreshRate = 32  //6ms
   
   //Define variables here
-  var sim = new Simulation(width, height)
+  val sim = new Simulation(width, height)
   
   //Main frame contains all the other components
   def top = new MainFrame {

@@ -52,6 +52,10 @@ class Boid(p: Vec, v: Vec, o: Vec) extends SimComponent(p) {
     return oldPosition
   }
   
+  def move() {
+    oldPosition = newPosition
+  }
+  
   def act(s: Simulation) {
     
     val steeringForces = for {
@@ -63,8 +67,6 @@ class Boid(p: Vec, v: Vec, o: Vec) extends SimComponent(p) {
     val acceleration = steeringForce / mass
     velocity = (velocity + acceleration).truncatedWith(maxSpeed)
     newPosition = oldPosition + velocity
-    
-    oldPosition = newPosition
 
   }
   

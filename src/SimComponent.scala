@@ -7,6 +7,8 @@ abstract class SimComponent(val pos: Vec) {
 
   def getPos: Vec
   
+  def move(): Unit
+  
   def act(s: Simulation): Unit
   
   def draw(g: Graphics2D): Unit

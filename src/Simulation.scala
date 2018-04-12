@@ -26,6 +26,7 @@ class Simulation(val width: Int, val height: Int) {
   def step() {
     components --= components.filterNot(x => (x.getPos.x >= 0 && x.getPos.x <= width) && (x.getPos.y >= 0 && x.getPos.y <= height))
     components.foreach(_.act(this))  //FIXME: Nullptr?
+    components.foreach(_.move())
   }
   
   /*Draw the simulation state on the given simSpace*/
