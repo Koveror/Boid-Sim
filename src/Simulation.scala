@@ -25,6 +25,10 @@ class Simulation(val width: Int, val height: Int) {
     boids.foreach(_.addBehavior(b))
   }
   
+  def addObstacle(o: Obstacle) {
+    obstacles += o
+  }
+  
   /*Removes the boid from the simulation*/
   def removeBoid(b: Boid) {
     boids -= b

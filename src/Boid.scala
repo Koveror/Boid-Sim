@@ -18,12 +18,14 @@ class Boid(p: Vec, v: Vec, o: Vec) extends SimComponent(p) {
   val maxSpeed = 10.0
   val neighborhood = 40.0  //The radius of neighborhood
   val drawSector = true
+  val drawSteering = true
   
   /*Variables*/
   private var oldPosition = p
   private var newPosition = p
   private var orientation = o
   private var velocity = v
+  private var steeringForce = v
   
   /*Behaviors*/
   //val seek: Behavior = new Seek
@@ -45,16 +47,22 @@ class Boid(p: Vec, v: Vec, o: Vec) extends SimComponent(p) {
     polyline
   }
   
+  def buildSteering: Rectangle2D = {
+    val rect = new Rectangle2D.Double(0, 0, 2, steeringForce.length * 20)
+    return rect
+  }
+  
   /*Boid can see SimComponents within it's rectangular view.*/
   def buildSector: GeneralPath =  {
     
-    val front = getVel.normalized
-    val left = front.rotate(Pi / 2)
-    val right = front.rotate(-Pi / 2)
-    val leftBottom = getPos + (left * 20)
-    val rightBottom = getPos + (right * 20)
-    val leftTop = getPos + (left * 20) + (front * 80)
-    val rightTop = getPos + (right * 20) + (front * 80)
+    val forward = getVel.normalized
+    val front = getVel * 80  //Build dynamically based on speed
+    val left = forward.rotate(Pi / 2) * 20
+    val right = forward.rotate(-Pi / 2) * 20
+    val leftBottom = getPos + left
+    val rightBottom = getPos + right
+    val leftTop = getPos + left + front
+    val rightTop = getPos + right + front
     
     //println("LB: " + leftBottom + ", LT: " + leftTop + ", RT: " + rightTop + ", RB: " + rightBottom)
     
@@ -101,7 +109,8 @@ class Boid(p: Vec, v: Vec, o: Vec) extends SimComponent(p) {
     val steeringForces = for {
       behavior <- behaviors
     } yield behavior.getSteeringVector(s, this)
-    val steeringForce = steeringForces.fold(s.zeroVector)(_ + _)
+    
+    steeringForce = steeringForces.fold(s.zeroVector)(_ + _)
     val acceleration = steeringForce / mass
     
     velocity = (velocity + acceleration).truncatedWith(maxSpeed)
@@ -121,6 +130,12 @@ class Boid(p: Vec, v: Vec, o: Vec) extends SimComponent(p) {
     g.translate(oldPosition.x, oldPosition.y)
     g.rotate(velocity.angle)
     g.fill(this.model)
+    
+    if(drawSteering) {
+      g.setColor(new Color(255, 0, 0))
+      g.rotate(steeringForce.angle)
+      g.fill(this.buildSteering)
+    }
     
     //Sector is drawn in global coordinates to allow for collision detection
     g.setTransform(old)

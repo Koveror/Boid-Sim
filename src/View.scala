@@ -9,9 +9,10 @@ object View extends SimpleSwingApplication {
   val height = 400
   val width = 600
   val refreshRate = 32  //6ms
+  val sim = new Simulation(width, height)
   
   //Define variables here
-  val sim = new Simulation(width, height)
+  var addMode = 0
   
   //Main frame contains all the other components
   def top = new MainFrame {
@@ -46,7 +47,11 @@ object View extends SimpleSwingApplication {
     listenTo(simSpace.keys)
     
     reactions += {
-      case scala.swing.event.MousePressed(src, point, _, _, _) => sim.addBoid(new Boid(new Vec(point.x, point.y), new Vec(1, 1), new Vec(1, 1)))
+      case scala.swing.event.MousePressed(src, point, mod, _, _) => {
+        if(addMode == 0) sim.addBoid(new Boid(new Vec(point.x, point.y), new Vec(1, 1), new Vec(1, 1)))
+        if(addMode == 1) sim.addObstacle(new Obstacle(new Vec(point.x, point.y)))
+      }
+      
       case scala.swing.event.KeyTyped(src, key, _, _) => {
         if(key == 'c') {
           sim.addBehavior(new Cohesion)
@@ -56,6 +61,12 @@ object View extends SimpleSwingApplication {
         }
         if(key == 'a') {
           sim.addBehavior(new Alignment)
+        }
+        if(key == 'o') {
+          addMode = 1
+        }
+        if(key == 'b') {
+          addMode = 0
         }
       }
     }
