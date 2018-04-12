@@ -68,6 +68,9 @@ object View extends SimpleSwingApplication {
         if(key == 'b') {
           addMode = 0
         }
+        if(key == 't') {
+          sim.addBehavior(new Seek(sim.targets.last))
+        }
       }
     }
     

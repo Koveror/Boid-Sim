@@ -17,7 +17,7 @@ class Boid(p: Vec, v: Vec, o: Vec) extends SimComponent(p) {
   val minSpeed = 1.0
   val maxSpeed = 10.0
   val neighborhood = 40.0  //The radius of neighborhood
-  val drawSector = true
+  val drawSector = false
   val drawSteering = true
   
   /*Variables*/
@@ -28,12 +28,11 @@ class Boid(p: Vec, v: Vec, o: Vec) extends SimComponent(p) {
   private var steeringForce = v
   
   /*Behaviors*/
-  //val seek: Behavior = new Seek
   val sep = new Separation
   val coh = new Cohesion
   val ali = new Alignment
   val obs = new ObstacleAvoidance
-  val behaviors: Buffer[Behavior] = Buffer(sep, coh, ali, obs)
+  val behaviors: Buffer[Behavior] = Buffer()
   
   /*Model is a polyline in the shape of an arrow*/
   val model = {
@@ -48,7 +47,7 @@ class Boid(p: Vec, v: Vec, o: Vec) extends SimComponent(p) {
   }
   
   def buildSteering: Rectangle2D = {
-    val rect = new Rectangle2D.Double(0, 0, 2, steeringForce.length * 20)
+    val rect = new Rectangle2D.Double(0, 0, steeringForce.length * 3, 2)
     return rect
   }
   
@@ -131,8 +130,11 @@ class Boid(p: Vec, v: Vec, o: Vec) extends SimComponent(p) {
     g.rotate(velocity.angle)
     g.fill(this.model)
     
+    g.setTransform(old)
+    
     if(drawSteering) {
       g.setColor(new Color(255, 0, 0))
+      g.translate(oldPosition.x, oldPosition.y)
       g.rotate(steeringForce.angle)
       g.fill(this.buildSteering)
     }
