@@ -2,7 +2,7 @@ import scala.swing._
 import java.awt.event.ActionListener
 import java.awt.Toolkit
 
-/*This is the view class responsible for drawing the simulation on screen.*/
+/*View class is responsible for drawing the simulation on screen.*/
 object View extends SimpleSwingApplication {
   
   //Define constants here

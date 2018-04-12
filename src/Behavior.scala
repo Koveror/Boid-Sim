@@ -1,6 +1,8 @@
 import java.awt.Graphics2D
 import scala.math._
 
+/*Boids have a list of behaviors that they follow. Each behavior gives a steering vector
+ *based on the current status of the simulation.*/
 abstract class Behavior {
   
   /*Each behavior gives a unique steering force that dictates which way the behavior wants to take the boid.

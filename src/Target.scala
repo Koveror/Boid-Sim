@@ -1,32 +1,27 @@
 import java.awt.Graphics2D
 import java.awt.geom.Ellipse2D
 
+/*Targets are static SimComponents that do not move. They can be used as targets for Seek and Flee behaviors. */
 class Target(p: Vec) extends SimComponent(p) {
   
-  val v = new Vec(0, 0)
-  
+  /*Model for targets is a small circle*/
   val model = {
     val size = 4
     val ellipse = new Ellipse2D.Double(-size, -size, 2*size, 2*size)
     ellipse
   }
   
-  def move() {
-    
-  }
-  
-  def getVel: Vec = {
-    return v
-  }
-  
+  /*Get position*/
   def getPos: Vec = {
     return p
   }
   
+  /*Act method can be used if targets need to do something each frame*/
   def act(s: Simulation) {
     //Do nothing
   }
   
+  /*Draw targets model on SimSpace*/
   def draw(g: Graphics2D) {
     
     val old = g.getTransform()

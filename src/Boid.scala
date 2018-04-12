@@ -4,20 +4,27 @@ import java.awt.geom.{GeneralPath, Path2D}
 import java.awt.geom.Rectangle2D
 import scala.collection.mutable.Buffer
 
+/*Boid is a simple vehicle that moves around in the simulation each time the move() method is called.
+ *New velocity and new position are calculated when the act() method is called.
+ *Based on the behaviors that the boid is following, a steering vector is calculated.
+ *This steering vector affects the boids velocity and therefore its new position.*/
 class Boid(p: Vec, v: Vec, o: Vec) extends SimComponent(p) {
   
+  /*Constants*/
   val mass = 80.0
   val maxForce = 20.0
   val minSpeed = 1.0
   val maxSpeed = 10.0
   val neighborhood = 40.0  //The radius of neighborhood
-  val zeroVector = new Vec(0, 0)
+  val drawSector = false
   
+  /*Variables*/
   private var oldPosition = p
   private var newPosition = p
   private var orientation = o
   private var velocity = v
   
+  /*Behaviors*/
   //val seek: Behavior = new Seek
   val sep = new Separation
   val coh = new Cohesion
@@ -25,8 +32,7 @@ class Boid(p: Vec, v: Vec, o: Vec) extends SimComponent(p) {
   //val obs: Behavior = new ObstacleAvoidance
   val behaviors: Buffer[Behavior] = Buffer(sep, coh, ali)
   
-  val drawSector = false
-  
+  /*Model is a polyline in the shape of an arrow*/
   val model = {
     val size = 8
     val polyline = new GeneralPath(Path2D.WIND_NON_ZERO, 10)
@@ -46,32 +52,40 @@ class Boid(p: Vec, v: Vec, o: Vec) extends SimComponent(p) {
     rectangle
   }
   
+  /*Remove all behaviors that are of the same type as b*/
+  def removeBehavior(b: Behavior) {
+    behaviors -- behaviors.filter(_.getType == b.getType)
+  }
+  
+  /*Add a behavior of this type, if it doesn't exist*/
   def addBehavior(b: Behavior) {
-    if(!behaviors.contains(b)) {
+    if(!behaviors.exists(_.getType == b.getType)) {  //TODO: Seek types to different targets???
       behaviors += b
     }
   }
   
+  /*Get current velocity*/
   def getVel: Vec = {
     return velocity
   }
   
+  /*Get current position of the boid. Use this when calculating behaviors.*/
   def getPos: Vec = {
     return oldPosition
   }
   
+  /*Move to the new position calculated by act()*/
   def move() {
     oldPosition = newPosition
   }
   
+  /*Calculate new position to be used with move()*/
   def act(s: Simulation) {
     
     val steeringForces = for {
       behavior <- behaviors
     } yield behavior.getSteeringVector(s, this)
-    val steeringForce = steeringForces.fold(zeroVector)(_ + _)
-    //println("SF: " + steeringForce)
-    //println("Is it: " + javax.swing.SwingUtilities.isEventDispatchThread)
+    val steeringForce = steeringForces.fold(s.zeroVector)(_ + _)
     val acceleration = steeringForce / mass
     
     velocity = (velocity + acceleration).truncatedWith(maxSpeed)

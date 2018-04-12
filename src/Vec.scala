@@ -1,5 +1,6 @@
 import scala.math._
 
+/*Vec is a class that implements basic vector operations. Vec objects are immutable*/
 class Vec(val x: Double, val y:Double) {
   
   def length: Double = hypot(x, y)
