@@ -29,7 +29,7 @@ class Flee(target: SimComponent) extends Behavior {
 //FIXME: Quite intense
 class Cohesion extends Behavior {
   def getSteeringVector(s: Simulation, b: Boid): Vec = {
-    val allBoids = s.components.filter(x => x.isInstanceOf[Boid])
+    val allBoids = s.boids
     val otherBoids = allBoids - b
     val nearbyBoids = otherBoids.filter(x => (x.getPos - b.getPos).length < b.neighborhood)
     if(nearbyBoids.isEmpty) {
@@ -46,7 +46,7 @@ class Cohesion extends Behavior {
 class Separation extends Behavior {
   /*Separation behavior keeps distance to nearby boids.*/
   def getSteeringVector(s: Simulation, b: Boid): Vec = {
-    val allBoids = s.components.filter(x => x.isInstanceOf[Boid])
+    val allBoids = s.boids
     val otherBoids = allBoids - b
     val nearbyBoids = otherBoids.filter(x => (x.getPos - b.getPos).length < b.neighborhood)
     
@@ -65,7 +65,7 @@ class Separation extends Behavior {
 
 class Alignment extends Behavior {
   def getSteeringVector(s: Simulation, b: Boid): Vec = {
-    val allBoids = s.components.filter(x => x.isInstanceOf[Boid])
+    val allBoids = s.boids
     val otherBoids = allBoids - b
     val nearbyBoids = otherBoids.filter(x => (x.getPos - b.getPos).length < b.neighborhood)
     
@@ -85,8 +85,7 @@ class ObstacleAvoidance extends Behavior {
   
   /*Calculate a sum vector for fleeing from all the obstacles in sight*/
   def getSteeringVector(s: Simulation, b: Boid): Vec = {
-    val components = s.components.clone()
-    val obstacles = components.filter(x => x.isInstanceOf[Obstacle])
+    val obstacles = s.obstacles
     //FIXME: Sector is not in place when checking
     val obstaclesInSight = obstacles.filter(x => b.sector.contains(x.getPos.x, x.getPos.y))
     //println("Size of obstacles: " + obstaclesInSight.size)

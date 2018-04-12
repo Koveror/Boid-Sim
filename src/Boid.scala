@@ -2,6 +2,7 @@ import java.awt.Graphics2D
 import scala.swing._
 import java.awt.geom.{GeneralPath, Path2D}
 import java.awt.geom.Rectangle2D
+import scala.collection.mutable.Buffer
 
 class Boid(p: Vec, v: Vec, o: Vec) extends SimComponent(p) {
   
@@ -21,7 +22,7 @@ class Boid(p: Vec, v: Vec, o: Vec) extends SimComponent(p) {
   val coh = new Cohesion
   val ali = new Alignment
   //val obs: Behavior = new ObstacleAvoidance
-  val behaviors = Array(sep, coh, ali)
+  val behaviors: Buffer[Behavior] = Buffer(sep)
   
   val drawSector = false
   
@@ -42,6 +43,12 @@ class Boid(p: Vec, v: Vec, o: Vec) extends SimComponent(p) {
     val length = 128
     val rectangle = new Rectangle2D.Double(0, -width / 2, length, width)
     rectangle
+  }
+  
+  def addBehavior(b: Behavior) {
+    if(!behaviors.contains(b)) {
+      behaviors += b
+    }
   }
   
   def getVel: Vec = {

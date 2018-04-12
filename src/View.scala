@@ -25,6 +25,8 @@ object View extends SimpleSwingApplication {
     
     val simSpace = new Panel {
       
+      focusable = true
+      
       override def paintComponent(g: Graphics2D) {
         //Draw background
         g.setColor(new Color(10, 100, 200))
@@ -41,9 +43,21 @@ object View extends SimpleSwingApplication {
     
     //Listen to user input here
     listenTo(simSpace.mouse.clicks)
+    listenTo(simSpace.keys)
     
     reactions += {
-      case scala.swing.event.MousePressed(src, point, _, _, _) => sim.addComponent(new Boid(new Vec(point.x, point.y), new Vec(1, 1), new Vec(1, 1)))
+      case scala.swing.event.MousePressed(src, point, _, _, _) => sim.addBoid(new Boid(new Vec(point.x, point.y), new Vec(1, 1), new Vec(1, 1)))
+      case scala.swing.event.KeyTyped(src, key, _, _) => {
+        if(key == 'c') {
+          sim.addBehavior(new Cohesion)
+        }
+        if(key == 's') {
+          sim.addBehavior(new Separation)
+        }
+        if(key == 'a') {
+          sim.addBehavior(new Alignment)
+        }
+      }
     }
     
     //Listen to action events coming in
