@@ -13,12 +13,15 @@ class Boid(p: Vec, v: Vec, o: Vec) extends SimComponent(p) {
   
   /*Constants*/
   val mass = 80.0
-  val maxForce = 20.0
-  val minSpeed = 1.0
+  val maxForce = 80.0
+  val minSpeed = 1.0  //FIXME: Having minSpeed causes orbiting around target when using Seek
   val maxSpeed = 10.0
   val neighborhood = 40.0  //The radius of neighborhood
+  val neighborAngle = Pi / 2
   val drawSector = false
-  val drawSteering = true
+  val drawSteering = false
+  val drawVelocity = false
+  val drawDesired = false
   
   /*Variables*/
   private var oldPosition = p
@@ -26,13 +29,14 @@ class Boid(p: Vec, v: Vec, o: Vec) extends SimComponent(p) {
   private var orientation = o
   private var velocity = v
   private var steeringForce = v
+  private var desiredVel = v
   
   /*Behaviors*/
   val sep = new Separation
   val coh = new Cohesion
   val ali = new Alignment
   val obs = new ObstacleAvoidance
-  val behaviors: Buffer[Behavior] = Buffer()
+  val behaviors: Buffer[Behavior] = Buffer(ali, sep, coh, obs)
   
   /*Model is a polyline in the shape of an arrow*/
   val model = {
@@ -47,7 +51,17 @@ class Boid(p: Vec, v: Vec, o: Vec) extends SimComponent(p) {
   }
   
   def buildSteering: Rectangle2D = {
-    val rect = new Rectangle2D.Double(0, 0, steeringForce.length * 3, 2)
+    val rect = new Rectangle2D.Double(0, 0, steeringForce.length * 5, 2)
+    return rect
+  }
+  
+  def buildVelocity: Rectangle2D = {
+    val rect = new Rectangle2D.Double(0, 0, velocity.length * 5, 2)
+    return rect
+  }
+  
+  def buildDesired: Rectangle2D = {
+    val rect = new Rectangle2D.Double(0, 0, desiredVel.length * 5, 2)
     return rect
   }
   
@@ -85,6 +99,11 @@ class Boid(p: Vec, v: Vec, o: Vec) extends SimComponent(p) {
     if(!behaviors.exists(_.getType == b.getType)) {  //TODO: Seek types to different targets???
       behaviors += b
     }
+  }
+  
+  /*Set a local copy of the desired velocity vector used in some behaviors.*/
+  def setDesired(v: Vec): Unit = {
+    desiredVel = v
   }
   
   /*Get current velocity*/
@@ -132,9 +151,27 @@ class Boid(p: Vec, v: Vec, o: Vec) extends SimComponent(p) {
     
     g.setTransform(old)
     
+    if(drawVelocity) {
+      g.setColor(new Color(0, 255, 0))
+      g.translate(oldPosition.x, oldPosition.y)
+      g.rotate(velocity.angle)
+      g.fill(this.buildVelocity)
+    }
+    
+    g.setTransform(old)
+    
+    if(drawDesired) {
+      g.setColor(new Color(0, 0, 255))
+      g.translate(oldPosition.x, oldPosition.y)
+      g.rotate(desiredVel.angle)
+      g.fill(this.buildDesired)
+    }
+    
+    g.setTransform(old)
+    
     if(drawSteering) {
       g.setColor(new Color(255, 0, 0))
-      g.translate(oldPosition.x, oldPosition.y)
+      g.translate(oldPosition.x + 5 * velocity.x, oldPosition.y + 5 * velocity.y)
       g.rotate(steeringForce.angle)
       g.fill(this.buildSteering)
     }

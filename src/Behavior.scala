@@ -19,6 +19,7 @@ class Seek(target: SimComponent) extends Behavior {
   /*Seek behavior makes boids home in on the target*/
   def getSteeringVector(s: Simulation, b: Boid): Vec = {
     val desiredVel = (target.getPos - b.getPos).normalized * b.maxSpeed
+    b.setDesired(desiredVel)
     val steering = desiredVel - b.getVel
     val steeringForce = steering.truncatedWith(b.maxForce)
     return steeringForce
@@ -65,7 +66,7 @@ class Separation extends Behavior {
   /*Separation behavior makes boid keep distance to nearby boids.*/
   def getSteeringVector(s: Simulation, b: Boid): Vec = {
     
-    val scalar = 120  //Make the behavior more intense with a coefficient
+    val scalar = 40  //Make the behavior more intense with a coefficient
     val allBoids = s.boids
     val otherBoids = allBoids - b
     val nearbyBoids = otherBoids.filter(x => (x.getPos - b.getPos).length < b.neighborhood)
