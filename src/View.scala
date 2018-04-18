@@ -1,13 +1,19 @@
 import scala.swing._
+import scala.swing.BorderPanel.Position._
 import java.awt.event.ActionListener
 import java.awt.Toolkit
+import java.awt.Color
+import java.awt.geom.Ellipse2D
 
 /*View class is responsible for drawing the simulation on screen.*/
 object View extends SimpleSwingApplication {
   
   //Define constants here
-  val height = 400
-  val width = 600
+  val buttonDim = 30
+  val simSpaceHeight = 400
+  val simSpaceWidth = 600
+  val height = simSpaceHeight
+  val width = buttonDim + simSpaceWidth + buttonDim
   val refreshRate = 32  //6ms
   val sim = new Simulation(width, height)
   
@@ -22,7 +28,6 @@ object View extends SimpleSwingApplication {
     size = new Dimension(width, height)
     minimumSize   = new Dimension(width, height)
     preferredSize = new Dimension(width, height)
-    maximumSize   = new Dimension(width, height)
     
     val simSpace = new Panel {
       
@@ -39,8 +44,21 @@ object View extends SimpleSwingApplication {
       
     }
     
+    val label = new Label {
+      text = "I'm a big label!"
+      font = new Font("Ariel", java.awt.Font.ITALIC, 24)
+    }
+    
+    val leftPanel = GUI.createLeftPanel()
+    
+    val rightPanel = GUI.createRightPanel()
+    
     //Add components to the window
-    contents = simSpace
+    contents = new BorderPanel {
+      layout(simSpace) = Center
+      layout(leftPanel) = East
+      layout(rightPanel) = West
+    }
     
     //Listen to user input here
     listenTo(simSpace.mouse.clicks)
