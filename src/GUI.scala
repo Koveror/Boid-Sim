@@ -9,25 +9,29 @@ object GUI {
   
   val buttonDim = 30
   val obsModel = new Obstacle(Vec(0, 0)).model
-  val doop = new CheckMenuItem("Check me")
   
   def createMenuBar(): MenuBar = {
     
-    val toggleSep = new CheckMenuItem("Seperation")
-    val toggleAli = new CheckMenuItem("Cohesion")
-    val toggleCoh = new CheckMenuItem("Alignment")
+    val toggleSep = new CheckMenuItem("Separation")
+    val toggleCoh = new CheckMenuItem("Cohesion")
+    val toggleAli = new CheckMenuItem("Alignment")
     val toggleObs = new CheckMenuItem("Obstacle avoidance")
-    val toggleList = List(toggleSep, toggleAli, toggleCoh, toggleObs)
+    val behaviorList = List(toggleSep, toggleAli, toggleCoh, toggleObs)
     
-    val radioBoid = new RadioMenuItem("Boid") {name = "Boid"}
-    val radioObs = new RadioMenuItem("Obstacle") {name = "Obstacle"}
-    val radioTar = new RadioMenuItem("Target") {name = "Target"}
-    val radioList = List(radioBoid, radioObs, radioTar)
+    val radioBoid = new RadioMenuItem("Boid")
+    val radioObs = new RadioMenuItem("Obstacle")
+    val radioTar = new RadioMenuItem("Target")
+    val componentList = List(radioBoid, radioObs, radioTar)
+    
+    val drawSector = new CheckMenuItem("Draw sectors")
+    val loopPositions = new CheckMenuItem("Loop positions")
+    val optionList = List(drawSector, loopPositions)
     
     val menu = new MenuBar {
+      
       contents += new Menu("Components") {
         contents += new MenuItem(Action("Remove all") {
-          //TODO: Implement
+          View.sim.clear()
         })
         contents += new Separator
         val a = radioBoid
@@ -40,43 +44,90 @@ object GUI {
       
       contents += new Menu("Behaviors") {
         contents += new MenuItem(Action("Apply to all") {
-          //TODO: Implement
+          View.sim.useDefaultForAll()
         })
         contents += new Separator
-        contents += toggleAli
-        contents += toggleSep
-        contents += toggleCoh
-        contents += toggleObs
+        contents ++= behaviorList
       }
       
       contents += new Menu("Options") {
-        //TODO: Implement drawing options etc.
+        contents ++= optionList
       }
       
       contents += new Menu("About") {
-        //TODO: Implement version info etc.
+        //TODO: Improve
+        contents += new MenuItem("Boid-Sim v1.0")
       }
       
-      toggleList.foreach(listenTo(_))
-      radioList.foreach(listenTo(_))
+      behaviorList.foreach(listenTo(_))
+      componentList.foreach(listenTo(_))
+      optionList.foreach(listenTo(_))
       
       reactions += {
-        case scala.swing.event.ButtonClicked(s) => {
-          s.name match {
-            case "Boid" => {
-              View.addMode = 0
-            }
-            case "Obstacle" => {
-              View.addMode = 1
-            }
-            case "Target" => {
-              View.addMode = 2
-            }
-            case _ => {
-              
-            }
+        
+        case scala.swing.event.ButtonClicked(`radioBoid`) => {
+          View.addMode = 0
+        }
+        case scala.swing.event.ButtonClicked(`radioObs`) => {
+          View.addMode = 1
+        }
+        case scala.swing.event.ButtonClicked(`radioTar`) => {
+          View.addMode = 2
+        }
+        
+        case scala.swing.event.ButtonClicked(`toggleSep`) => {
+          if(toggleSep.selected) {
+            //It is now selected, so add to all
+            View.sim.addDefaultBehavior(new Separation)
+          } else {
+            View.sim.removeDefaultBehavior(new Separation)
           }
         }
+        
+        case scala.swing.event.ButtonClicked(`toggleAli`) => {
+          if(toggleAli.selected) {
+            //It is now selected, so add to all
+            View.sim.addDefaultBehavior(new Alignment)
+          } else {
+            View.sim.removeDefaultBehavior(new Alignment)
+          }
+        }
+        
+        case scala.swing.event.ButtonClicked(`toggleCoh`) => {
+          if(toggleCoh.selected) {
+            //It is now selected, so add to all
+            View.sim.addDefaultBehavior(new Cohesion)
+          } else {
+            View.sim.removeDefaultBehavior(new Cohesion)
+          }
+        }
+        
+        case scala.swing.event.ButtonClicked(`toggleObs`) => {
+          if(toggleObs.selected) {
+            //It is now selected, so add to all
+            View.sim.addDefaultBehavior(new ObstacleAvoidance)
+          } else {
+            View.sim.removeDefaultBehavior(new ObstacleAvoidance)
+          }
+        }
+        
+        case scala.swing.event.ButtonClicked(`drawSector`) => {
+          if(drawSector.selected) {
+            //It is now selected, so add to all
+            View.sim.drawSector = true
+          } else {
+            View.sim.drawSector = false
+          }
+        }
+        case scala.swing.event.ButtonClicked(`loopPositions`) => {
+          if(loopPositions.selected) {
+            //It is now selected, so add to all
+            View.sim.loopPositions = true
+          } else {
+            View.sim.loopPositions = false
+          }
+        }
+        
         
         
       }

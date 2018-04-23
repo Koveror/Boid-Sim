@@ -28,11 +28,7 @@ class Boid(p: Vec, v: Vec, o: Vec) extends SimComponent(p) {
   private var desiredVel = v
   
   /*Behaviors*/
-  val sep = new Separation
-  val coh = new Cohesion
-  val ali = new Alignment
-  val obs = new ObstacleAvoidance
-  val behaviors: Buffer[Behavior] = Buffer(ali, sep, coh, obs)
+  val behaviors: Buffer[Behavior] = Buffer()
   
   /*Model is a polyline in the shape of an arrow*/
   val model = {
@@ -83,6 +79,10 @@ class Boid(p: Vec, v: Vec, o: Vec) extends SimComponent(p) {
     
   }
   
+  def clearBehaviors() {
+    behaviors.clear()
+  }
+  
   /*Remove all behaviors that are of the same type as b*/
   def removeBehavior(b: Behavior) {
     behaviors -- behaviors.filter(_.getType == b.getType)
@@ -95,6 +95,7 @@ class Boid(p: Vec, v: Vec, o: Vec) extends SimComponent(p) {
     }
   }
   
+  /*Manually set the position of this boid. Used when looping positions is simulation.*/
   def setPos(p: Vec): Unit = {
     oldPosition = p
   }

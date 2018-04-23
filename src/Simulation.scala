@@ -5,13 +5,16 @@ import java.awt.Graphics2D
  *The method draw() is used to draw the current state of the simulation.*/
 class Simulation(val width: Int, val height: Int) {
   
-  /*Buffers*/
+  /*Components*/
   val boids = Buffer[Boid]()
   val obstacles = Buffer[Obstacle]()
   val targets = Buffer[Target]()
   
   /*Constants*/
   val zeroVector = new Vec(0, 0)
+  
+  /*Default behaviors*/
+  val defaultBeh = Buffer[Behavior]()
   
   /*Options*/
   var drawSector = false
@@ -27,32 +30,56 @@ class Simulation(val width: Int, val height: Int) {
   obstacles += new Obstacle(new Vec(150, 250))
   obstacles += new Obstacle(new Vec(400, 50))
   
+  /*Remove all components*/
+  def clear() {
+    boids.clear()
+    obstacles.clear()
+    targets.clear()
+  }
+  
+  /*Add target to targets*/
   def addTarget(t: Target) {
     targets += t
   }
   
-  /*Add behavior b to all current boids*/
-  def addBehavior(b: Behavior) {
-    boids.foreach(_.addBehavior(b))
+  /*Add behavior to list of default behaviors. New boids are created with these behaviors*/
+  def addDefaultBehavior(b: Behavior) {
+    if(!defaultBeh.exists(b.getType == _.getType)) {
+      defaultBeh += b 
+    }
   }
   
+  /*Add behavior to list of default behaviors. New boids are created with these behaviors*/
+  def removeDefaultBehavior(b: Behavior) {
+    defaultBeh --= defaultBeh.filter(_.getType == b.getType)
+  }
+  
+  /*Use default set with all*/
+  def useDefaultForAll() {
+    boids.foreach(_.clearBehaviors())
+    for(beh <- defaultBeh) {
+      boids.foreach(_.addBehavior(beh))
+    }
+  }
+  
+  /*Add obstacle to obstacles*/
   def addObstacle(o: Obstacle) {
     obstacles += o
   }
   
-  /*Removes the boid from the simulation*/
+  /*Removes the boid b from the simulation*/
   def removeBoid(b: Boid) {
     boids -= b
   }
   
-  /*Add a new boid to the simulation*/
+  /*Add a new boid b to the simulation with all default behaviors*/
   def addBoid(b: Boid) {
+    defaultBeh.foreach(b.addBehavior(_))
     boids += b
   }
   
   /*Move simulation along by one turn*/
   def step() {
-    println(boids.size)
     if(!loopPositions) {
       boids --= boids.filterNot(x => (x.getPos.x >= 0 && x.getPos.x <= width) && (x.getPos.y >= 0 && x.getPos.y <= height))
     }
