@@ -23,13 +23,6 @@ class Simulation(val width: Int, val height: Int) {
   var drawDesired = false
   var loopPositions = false
   
-  /*Initialize simulation*/
-  val target = new Target(new Vec(100, 300))
-  targets += target
-  obstacles += new Obstacle(new Vec(100, 100))
-  obstacles += new Obstacle(new Vec(150, 250))
-  obstacles += new Obstacle(new Vec(400, 50))
-  
   /*Remove all components*/
   def clear() {
     boids.clear()

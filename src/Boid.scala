@@ -118,7 +118,7 @@ class Boid(p: Vec, v: Vec, o: Vec) extends SimComponent(p) {
   /*Move to the new position calculated by act()*/
   def move(s: Simulation) {
     if(s.loopPositions) {
-      val normPos = Vec(newPosition.x % s.width, newPosition.y % s.height)
+      val normPos = Vec(newPosition.x % s.width, newPosition.y % s.height)  //FIXME: Some weird stuff happens sometimes
       oldPosition = normPos
     } else {
       oldPosition = newPosition

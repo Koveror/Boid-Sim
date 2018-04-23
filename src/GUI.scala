@@ -5,6 +5,8 @@ import java.awt.Toolkit
 import java.awt.Color
 import java.awt.geom.Ellipse2D
 
+/*GUI object is used to create a graphical user interface for the View.
+ *The graphical user interface controls the simulation options based on user input.*/
 object GUI {
   
   val buttonDim = 30
@@ -65,6 +67,7 @@ object GUI {
       
       reactions += {
         
+        /*Component buttons*/
         case scala.swing.event.ButtonClicked(`radioBoid`) => {
           View.addMode = 0
         }
@@ -75,6 +78,7 @@ object GUI {
           View.addMode = 2
         }
         
+        /*Behavior buttons*/
         case scala.swing.event.ButtonClicked(`toggleSep`) => {
           if(toggleSep.selected) {
             //It is now selected, so add to all
@@ -111,6 +115,7 @@ object GUI {
           }
         }
         
+        /*Option buttons*/
         case scala.swing.event.ButtonClicked(`drawSector`) => {
           if(drawSector.selected) {
             //It is now selected, so add to all
@@ -127,8 +132,6 @@ object GUI {
             View.sim.loopPositions = false
           }
         }
-        
-        
         
       }
       
