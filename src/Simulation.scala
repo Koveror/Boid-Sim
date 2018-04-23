@@ -41,9 +41,9 @@ class Simulation(val width: Int, val height: Int) {
   
   /*Move simulation along by one turn*/
   def step() {
-    boids --= boids.filterNot(x => (x.getPos.x >= 0 && x.getPos.x <= width) && (x.getPos.y >= 0 && x.getPos.y <= height))
+    //boids --= boids.filterNot(x => (x.getPos.x >= 0 && x.getPos.x <= width) && (x.getPos.y >= 0 && x.getPos.y <= height))
     boids.foreach(_.act(this))  //FIXME: Nullptr?
-    boids.foreach(_.move())
+    boids.foreach(_.move(this))
   }
   
   /*Draw the simulation state on the given SimSpace*/

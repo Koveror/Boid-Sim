@@ -14,7 +14,7 @@ object View extends SimpleSwingApplication {
   val simSpaceWidth = 600
   val height = simSpaceHeight
   val width = buttonDim + simSpaceWidth + buttonDim
-  val refreshRate = 32  //6ms
+  val refreshRate = 6  //6ms
   val sim = new Simulation(width, height)
   
   //Define variables here
@@ -43,26 +43,23 @@ object View extends SimpleSwingApplication {
       }
       
     }
-    
-    val label = new Label {
-      text = "I'm a big label!"
-      font = new Font("Ariel", java.awt.Font.ITALIC, 24)
-    }
-    
-    val leftPanel = GUI.createLeftPanel()
-    
-    val rightPanel = GUI.createRightPanel()
+
+    val menubar = GUI.createMenuBar()
+    //val leftPanel = GUI.createLeftPanel()
+    //val rightPanel = GUI.createRightPanel()
     
     //Add components to the window
     contents = new BorderPanel {
+      layout(menubar) = North
       layout(simSpace) = Center
-      layout(leftPanel) = East
-      layout(rightPanel) = West
+      //layout(leftPanel) = West
+      //layout(rightPanel) = East
     }
     
     //Listen to user input here
     listenTo(simSpace.mouse.clicks)
     listenTo(simSpace.keys)
+    listenTo(menubar)
     
     reactions += {
       case scala.swing.event.MousePressed(src, point, mod, _, _) => {

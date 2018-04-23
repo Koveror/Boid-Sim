@@ -9,6 +9,66 @@ object GUI {
   
   val buttonDim = 30
   val obsModel = new Obstacle(Vec(0, 0)).model
+  val doop = new CheckMenuItem("Check me")
+  
+  def createMenuBar(): MenuBar = {
+    
+    val toggleSep = new CheckMenuItem("Seperation")
+    val toggleAli = new CheckMenuItem("Cohesion")
+    val toggleCoh = new CheckMenuItem("Alignment")
+    val toggleList = List(toggleSep, toggleAli, toggleCoh)
+    
+    val radioBoid = new RadioMenuItem("Boid") {name = "Boid"}
+    val radioObs = new RadioMenuItem("Obstacle") {name = "Obstacle"}
+    val radioTar = new RadioMenuItem("Target") {name = "Target"}
+    val radioList = List(radioBoid, radioObs, radioTar)
+    
+    val menu = new MenuBar {
+      contents += new Menu("Add") {
+        val a = radioBoid
+        val b = radioObs
+        val c = radioTar
+        val mutex = new ButtonGroup(a,b,c)
+        contents ++= mutex.buttons
+      }
+      
+      contents += new Menu("Behavior") {
+        contents += new MenuItem(Action("Apply to all") {
+          View.addMode = 1
+        })
+        contents += new Separator
+        contents += toggleAli
+        contents += toggleSep
+        contents += toggleCoh
+      }
+      
+      toggleList.foreach(listenTo(_))
+      radioList.foreach(listenTo(_))
+      
+      reactions += {
+        case scala.swing.event.ButtonClicked(s) => {
+          s.name match {
+            case "Boid" => {
+              View.addMode = 0
+            }
+            case "Obstacle" => {
+              View.addMode = 1
+            }
+            case "Target" => {
+              View.addMode = 2
+            }
+            case _ => {
+              
+            }
+          }
+        }
+        
+        
+      }
+      
+    }
+    return menu
+  }
   
   def createLeftPanel(): GridPanel = {
     val leftPanel = new GridPanel(3, 1) {
@@ -20,7 +80,8 @@ object GUI {
   }
   
   def createRightPanel(): GridPanel = {
-    val leftPanel = new GridPanel(3, 1) {
+    val leftPanel = new GridPanel(5, 1) {
+      contents += createButton(obsModel)
       contents += createButton(obsModel)
       contents += createButton(obsModel)
       contents += createButton(obsModel)
@@ -35,20 +96,20 @@ object GUI {
         
         val old = g.getTransform()
         
-        val h = this.bounds.getHeight
-        val w = this.bounds.getWidth
-        g.translate(this.location.x, this.location.y)
+        val h = bounds.getHeight
+        val w = bounds.getWidth
+        g.translate(location.x, location.y)
         g.setColor(new Color(10, 100, 200))
         g.fill(this.bounds)
-        g.translate(this.location.x + w / 2, this.location.y + h / 2)
+        g.translate(location.x + w / 2, location.y + h / 2)
         g.setColor(new Color(255, 255, 255))
         g.fill(obsModel)
         
         g.setTransform(old)
         
       }
-      minimumSize = new Dimension(buttonDim, buttonDim)
-      maximumSize = new Dimension(buttonDim, buttonDim)
+      //minimumSize = new Dimension(buttonDim, buttonDim)
+      //maximumSize = new Dimension(buttonDim, buttonDim)
       borderPainted = true
       enabled = true
     }

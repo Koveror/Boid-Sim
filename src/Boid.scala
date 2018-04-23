@@ -22,6 +22,7 @@ class Boid(p: Vec, v: Vec, o: Vec) extends SimComponent(p) {
   val drawSteering = false
   val drawVelocity = false
   val drawDesired = false
+  val loopPositions = true
   
   /*Variables*/
   private var oldPosition = p
@@ -101,6 +102,10 @@ class Boid(p: Vec, v: Vec, o: Vec) extends SimComponent(p) {
     }
   }
   
+  def setPos(p: Vec): Unit = {
+    oldPosition = p
+  }
+  
   /*Set a local copy of the desired velocity vector used in some behaviors.*/
   def setDesired(v: Vec): Unit = {
     desiredVel = v
@@ -117,8 +122,13 @@ class Boid(p: Vec, v: Vec, o: Vec) extends SimComponent(p) {
   }
   
   /*Move to the new position calculated by act()*/
-  def move() {
-    oldPosition = newPosition
+  def move(s: Simulation) {
+    if(loopPositions) {
+      val normPos = Vec(newPosition.x % s.width, newPosition.y % s.height)
+      oldPosition = normPos
+    } else {
+      oldPosition = newPosition
+    }
   }
   
   /*Calculate new position to be used with move()*/
