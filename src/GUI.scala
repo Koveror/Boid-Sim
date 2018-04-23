@@ -16,7 +16,8 @@ object GUI {
     val toggleSep = new CheckMenuItem("Seperation")
     val toggleAli = new CheckMenuItem("Cohesion")
     val toggleCoh = new CheckMenuItem("Alignment")
-    val toggleList = List(toggleSep, toggleAli, toggleCoh)
+    val toggleObs = new CheckMenuItem("Obstacle avoidance")
+    val toggleList = List(toggleSep, toggleAli, toggleCoh, toggleObs)
     
     val radioBoid = new RadioMenuItem("Boid") {name = "Boid"}
     val radioObs = new RadioMenuItem("Obstacle") {name = "Obstacle"}
@@ -24,22 +25,36 @@ object GUI {
     val radioList = List(radioBoid, radioObs, radioTar)
     
     val menu = new MenuBar {
-      contents += new Menu("Add") {
+      contents += new Menu("Components") {
+        contents += new MenuItem(Action("Remove all") {
+          //TODO: Implement
+        })
+        contents += new Separator
         val a = radioBoid
         val b = radioObs
         val c = radioTar
+        a.selected = true
         val mutex = new ButtonGroup(a,b,c)
         contents ++= mutex.buttons
       }
       
-      contents += new Menu("Behavior") {
+      contents += new Menu("Behaviors") {
         contents += new MenuItem(Action("Apply to all") {
-          View.addMode = 1
+          //TODO: Implement
         })
         contents += new Separator
         contents += toggleAli
         contents += toggleSep
         contents += toggleCoh
+        contents += toggleObs
+      }
+      
+      contents += new Menu("Options") {
+        //TODO: Implement drawing options etc.
+      }
+      
+      contents += new Menu("About") {
+        //TODO: Implement version info etc.
       }
       
       toggleList.foreach(listenTo(_))

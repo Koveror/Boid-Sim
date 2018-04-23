@@ -10,14 +10,14 @@ object View extends SimpleSwingApplication {
   
   //Define constants here
   val buttonDim = 30
-  val simSpaceHeight = 400
-  val simSpaceWidth = 600
+  val simSpaceHeight = 600
+  val simSpaceWidth = 800
   val height = simSpaceHeight
   val width = buttonDim + simSpaceWidth + buttonDim
-  val refreshRate = 6  //6ms
+  val refreshRate = 16  //6ms
   val sim = new Simulation(width, height)
   
-  //Define variables here
+  //The addMode variable is controlled by the GUI.
   var addMode = 0
   
   //Main frame contains all the other components
@@ -63,29 +63,9 @@ object View extends SimpleSwingApplication {
     
     reactions += {
       case scala.swing.event.MousePressed(src, point, mod, _, _) => {
-        if(addMode == 0) sim.addBoid(new Boid(new Vec(point.x, point.y), new Vec(1, 1), new Vec(1, 1)))
+        if(addMode == 0) sim.addBoid(new Boid(Vec(point.x, point.y), Vec(1, 1), Vec(1, 1)))
         if(addMode == 1) sim.addObstacle(new Obstacle(new Vec(point.x, point.y)))
-      }
-      
-      case scala.swing.event.KeyTyped(src, key, _, _) => {
-        if(key == 'c') {
-          sim.addBehavior(new Cohesion)
-        }
-        if(key == 's') {
-          sim.addBehavior(new Separation)
-        }
-        if(key == 'a') {
-          sim.addBehavior(new Alignment)
-        }
-        if(key == 'o') {
-          addMode = 1
-        }
-        if(key == 'b') {
-          addMode = 0
-        }
-        if(key == 't') {
-          sim.addBehavior(new Seek(sim.targets.last))
-        }
+        if(addMode == 2) sim.addTarget(new Target(Vec(point.x, point.y)))
       }
     }
     

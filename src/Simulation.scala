@@ -13,12 +13,23 @@ class Simulation(val width: Int, val height: Int) {
   /*Constants*/
   val zeroVector = new Vec(0, 0)
   
+  /*Options*/
+  var drawSector = false
+  var drawSteering = false
+  var drawVelocity = false
+  var drawDesired = false
+  var loopPositions = false
+  
   /*Initialize simulation*/
   val target = new Target(new Vec(100, 300))
   targets += target
   obstacles += new Obstacle(new Vec(100, 100))
   obstacles += new Obstacle(new Vec(150, 250))
   obstacles += new Obstacle(new Vec(400, 50))
+  
+  def addTarget(t: Target) {
+    targets += t
+  }
   
   /*Add behavior b to all current boids*/
   def addBehavior(b: Behavior) {
@@ -41,7 +52,10 @@ class Simulation(val width: Int, val height: Int) {
   
   /*Move simulation along by one turn*/
   def step() {
-    //boids --= boids.filterNot(x => (x.getPos.x >= 0 && x.getPos.x <= width) && (x.getPos.y >= 0 && x.getPos.y <= height))
+    println(boids.size)
+    if(!loopPositions) {
+      boids --= boids.filterNot(x => (x.getPos.x >= 0 && x.getPos.x <= width) && (x.getPos.y >= 0 && x.getPos.y <= height))
+    }
     boids.foreach(_.act(this))  //FIXME: Nullptr?
     boids.foreach(_.move(this))
   }

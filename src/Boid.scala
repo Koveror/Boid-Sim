@@ -18,11 +18,6 @@ class Boid(p: Vec, v: Vec, o: Vec) extends SimComponent(p) {
   val maxSpeed = 10.0
   val neighborhood = 40.0  //The radius of neighborhood
   val neighborAngle = Pi / 2
-  val drawSector = false
-  val drawSteering = false
-  val drawVelocity = false
-  val drawDesired = false
-  val loopPositions = true
   
   /*Variables*/
   private var oldPosition = p
@@ -78,8 +73,6 @@ class Boid(p: Vec, v: Vec, o: Vec) extends SimComponent(p) {
     val leftTop = getPos + left + front
     val rightTop = getPos + right + front
     
-    //println("LB: " + leftBottom + ", LT: " + leftTop + ", RT: " + rightTop + ", RB: " + rightBottom)
-    
     val polyline = new GeneralPath(Path2D.WIND_NON_ZERO, 10)
     polyline.moveTo(leftBottom.x, leftBottom.y)
     polyline.lineTo(leftTop.x, leftTop.y)
@@ -123,7 +116,7 @@ class Boid(p: Vec, v: Vec, o: Vec) extends SimComponent(p) {
   
   /*Move to the new position calculated by act()*/
   def move(s: Simulation) {
-    if(loopPositions) {
+    if(s.loopPositions) {
       val normPos = Vec(newPosition.x % s.width, newPosition.y % s.height)
       oldPosition = normPos
     } else {
@@ -151,7 +144,7 @@ class Boid(p: Vec, v: Vec, o: Vec) extends SimComponent(p) {
   /*Draw this component on the screen by moving it into place and then filling it in. 
    *Finally reset the transform.*/
   def draw(g: Graphics2D) = {
-    
+ 
     val old = g.getTransform()
     
     g.setColor(new Color(255, 255, 255))
@@ -161,7 +154,7 @@ class Boid(p: Vec, v: Vec, o: Vec) extends SimComponent(p) {
     
     g.setTransform(old)
     
-    if(drawVelocity) {
+    if(View.sim.drawVelocity) {
       g.setColor(new Color(0, 255, 0))
       g.translate(oldPosition.x, oldPosition.y)
       g.rotate(velocity.angle)
@@ -170,7 +163,7 @@ class Boid(p: Vec, v: Vec, o: Vec) extends SimComponent(p) {
     
     g.setTransform(old)
     
-    if(drawDesired) {
+    if(View.sim.drawDesired) {
       g.setColor(new Color(0, 0, 255))
       g.translate(oldPosition.x, oldPosition.y)
       g.rotate(desiredVel.angle)
@@ -179,7 +172,7 @@ class Boid(p: Vec, v: Vec, o: Vec) extends SimComponent(p) {
     
     g.setTransform(old)
     
-    if(drawSteering) {
+    if(View.sim.drawSteering) {
       g.setColor(new Color(255, 0, 0))
       g.translate(oldPosition.x + 5 * velocity.x, oldPosition.y + 5 * velocity.y)
       g.rotate(steeringForce.angle)
@@ -190,7 +183,7 @@ class Boid(p: Vec, v: Vec, o: Vec) extends SimComponent(p) {
     g.setTransform(old)
     g.setColor(new Color(255, 255, 255))
     
-    if(drawSector) {
+    if(View.sim.drawSector) {
       g.setColor(new Color(255, 255, 255, 50))
       g.fill(this.buildSector)
     }
