@@ -79,6 +79,7 @@ class Simulation(val width: Int, val height: Int) {
     }
     boids.foreach(_.act(this))  //FIXME: Nullptr?
     boids.foreach(_.move(this))
+    //println(defaultBeh)
   }
   
   /*Draw the simulation state on the given SimSpace*/
