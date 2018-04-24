@@ -1,6 +1,7 @@
 import scala.swing._
 import scala.swing.BorderPanel.Position._
 import java.awt.event.ActionListener
+import java.awt.RenderingHints
 import java.awt.Toolkit
 import java.awt.Color
 import java.awt.geom.Ellipse2D
@@ -38,6 +39,7 @@ object View extends SimpleSwingApplication {
         g.setColor(new Color(10, 100, 200))
         g.fillRect(0, 0, width, height)
         //Draw simComponents
+        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON)
         g.setColor(new Color(255, 255, 255))
         sim.draw(g)
       }
