@@ -124,3 +124,16 @@ class ObstacleAvoidance extends Behavior {
   
   def getType = 6
 }
+
+class TargetSeeking extends Behavior {
+  def getSteeringVector(s: Simulation, b: Boid): Vec = {
+    if(s.targets.isEmpty) {
+      return s.zeroVector
+    } else {
+      val seek = new Seek(s.targets.last)
+      return seek.getSteeringVector(s, b)
+    }
+  }
+  
+  def getType = 6
+}

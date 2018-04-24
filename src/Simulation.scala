@@ -32,6 +32,7 @@ class Simulation(val width: Int, val height: Int) {
   
   /*Add target to targets*/
   def addTarget(t: Target) {
+    targets.clear()
     targets += t
   }
   

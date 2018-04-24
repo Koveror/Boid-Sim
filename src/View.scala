@@ -45,15 +45,11 @@ object View extends SimpleSwingApplication {
     }
 
     val menubar = GUI.createMenuBar()
-    //val leftPanel = GUI.createLeftPanel()
-    //val rightPanel = GUI.createRightPanel()
     
     //Add components to the window
     contents = new BorderPanel {
       layout(menubar) = North
       layout(simSpace) = Center
-      //layout(leftPanel) = West
-      //layout(rightPanel) = East
     }
     
     //Listen to user input here

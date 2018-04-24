@@ -18,7 +18,8 @@ object GUI {
     val toggleCoh = new CheckMenuItem("Cohesion")
     val toggleAli = new CheckMenuItem("Alignment")
     val toggleObs = new CheckMenuItem("Obstacle avoidance")
-    val behaviorList = List(toggleSep, toggleAli, toggleCoh, toggleObs)
+    val toggleTar = new CheckMenuItem("Target seeking")
+    val behaviorList = List(toggleSep, toggleAli, toggleCoh, toggleObs, toggleTar)
     
     val radioBoid = new RadioMenuItem("Boid")
     val radioObs = new RadioMenuItem("Obstacle")
@@ -112,6 +113,15 @@ object GUI {
             View.sim.addDefaultBehavior(new ObstacleAvoidance)
           } else {
             View.sim.removeDefaultBehavior(new ObstacleAvoidance)
+          }
+        }
+        
+        case scala.swing.event.ButtonClicked(`toggleTar`) => {
+          if(toggleTar.selected) {
+            //It is now selected, so add to all
+            View.sim.addDefaultBehavior(new TargetSeeking)
+          } else {
+            View.sim.removeDefaultBehavior(new TargetSeeking)
           }
         }
         
