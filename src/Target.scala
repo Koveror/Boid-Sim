@@ -1,5 +1,6 @@
 import java.awt.Graphics2D
 import java.awt.geom.Ellipse2D
+import java.awt.geom.Rectangle2D
 
 /*Targets are static SimComponents that do not move. They can be used as targets for Seek and Flee behaviors. */
 class Target(p: Vec) extends SimComponent(p) {
@@ -7,8 +8,8 @@ class Target(p: Vec) extends SimComponent(p) {
   /*Model for targets is a small circle*/
   val model = {
     val size = 4
-    val ellipse = new Ellipse2D.Double(-size, -size, 2*size, 2*size)
-    ellipse
+    val rect = new Rectangle2D.Double(-size, -size, 2*size, 2*size)
+    rect
   }
   
   /*Get position*/

@@ -131,7 +131,7 @@ class ObstacleAvoidance extends Behavior {
 
 class TargetSeeking extends Behavior {
   def getSteeringVector(s: Simulation, b: Boid): Vec = {
-    val coefficient = 0.5
+    val coefficient = 1.0
     if(s.targets.isEmpty) {
       return s.zeroVector
     } else {
