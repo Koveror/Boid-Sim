@@ -5,7 +5,7 @@ import java.awt.geom.Rectangle2D
 /*Targets are static SimComponents that do not move. They can be used as targets for Seek and Flee behaviors. */
 class Target(p: Vec) extends SimComponent(p) {
   
-  /*Model for targets is a small circle*/
+  /*Model for targets is a small rectangle*/
   val model = {
     val size = 4
     val rect = new Rectangle2D.Double(-size, -size, 2*size, 2*size)

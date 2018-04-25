@@ -9,11 +9,9 @@ import java.awt.geom.Ellipse2D
  *The graphical user interface controls the simulation options based on user input.*/
 object GUI {
   
-  val buttonDim = 30
-  val obsModel = new Obstacle(Vec(0, 0)).model
-  
   def createMenuBar(): MenuBar = {
     
+    //Behavior buttons
     val toggleSep = new CheckMenuItem("Separation")
     val toggleCoh = new CheckMenuItem("Cohesion")
     val toggleAli = new CheckMenuItem("Alignment")
@@ -21,14 +19,17 @@ object GUI {
     val toggleTar = new CheckMenuItem("Target seeking")
     val behaviorList = List(toggleSep, toggleAli, toggleCoh, toggleObs, toggleTar)
     
+    //Simcomponent buttons
     val radioBoid = new RadioMenuItem("Boid")
     val radioObs = new RadioMenuItem("Obstacle")
     val radioTar = new RadioMenuItem("Target")
     val componentList = List(radioBoid, radioObs, radioTar)
     
+    //Options buttons
     val drawSector = new CheckMenuItem("Draw sectors")
+    val drawVector = new CheckMenuItem("Draw vectors")
     val loopPositions = new CheckMenuItem("Loop positions")
-    val optionList = List(drawSector, loopPositions)
+    val optionList = List(drawSector, drawVector, loopPositions)
     
     val menu = new MenuBar {
       
@@ -142,56 +143,22 @@ object GUI {
             View.sim.loopPositions = false
           }
         }
+        case scala.swing.event.ButtonClicked(`drawVector`) => {
+          if(drawVector.selected) {
+            //It is now selected, so add to all
+            View.sim.drawVelocity = true
+            View.sim.drawSteering = true
+            View.sim.drawDesired = true
+          } else {
+            View.sim.drawVelocity = false
+            View.sim.drawSteering = false
+            View.sim.drawDesired = false
+          }
+        }
         
       }
       
     }
     return menu
-  }
-  
-  def createLeftPanel(): GridPanel = {
-    val leftPanel = new GridPanel(3, 1) {
-      contents += createButton(obsModel)
-      contents += createButton(obsModel)
-      contents += createButton(obsModel)
-    }
-    return leftPanel
-  }
-  
-  def createRightPanel(): GridPanel = {
-    val leftPanel = new GridPanel(5, 1) {
-      contents += createButton(obsModel)
-      contents += createButton(obsModel)
-      contents += createButton(obsModel)
-      contents += createButton(obsModel)
-    }
-    return leftPanel
-  }
-  
-  def createButton(m: Ellipse2D): Button = {
-    val button = new Button {
-      
-      override def paintComponent(g: Graphics2D) {
-        
-        val old = g.getTransform()
-        
-        val h = bounds.getHeight
-        val w = bounds.getWidth
-        g.translate(location.x, location.y)
-        g.setColor(new Color(10, 100, 200))
-        g.fill(this.bounds)
-        g.translate(location.x + w / 2, location.y + h / 2)
-        g.setColor(new Color(255, 255, 255))
-        g.fill(obsModel)
-        
-        g.setTransform(old)
-        
-      }
-      //minimumSize = new Dimension(buttonDim, buttonDim)
-      //maximumSize = new Dimension(buttonDim, buttonDim)
-      borderPainted = true
-      enabled = true
-    }
-    return button
   }
 }

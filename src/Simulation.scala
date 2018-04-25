@@ -1,7 +1,8 @@
 import scala.collection.mutable.Buffer
 import java.awt.Graphics2D
 
-/*Simulation is moved along with the step() method.
+/*Simulation object contains all the SimComponents. 
+ *Simulation is moved along with the step() method.
  *The method draw() is used to draw the current state of the simulation.*/
 class Simulation(val width: Int, val height: Int) {
   
@@ -30,25 +31,25 @@ class Simulation(val width: Int, val height: Int) {
     targets.clear()
   }
   
-  /*Add target to targets*/
+  /*Add target to targets. Only one target can exist at any given time.*/
   def addTarget(t: Target) {
     targets.clear()
     targets += t
   }
   
-  /*Add behavior to list of default behaviors. New boids are created with these behaviors*/
+  /*Add behavior to list of default behaviors. Any new boids are given these behaviors*/
   def addDefaultBehavior(b: Behavior) {
     if(!defaultBeh.exists(b.getType == _.getType)) {
       defaultBeh += b 
     }
   }
   
-  /*Add behavior to list of default behaviors. New boids are created with these behaviors*/
+  /*Add behavior to list of default behaviors. Any new boid is given these behaviors*/
   def removeDefaultBehavior(b: Behavior) {
     defaultBeh --= defaultBeh.filter(_.getType == b.getType)
   }
   
-  /*Use default set with all*/
+  /*Use default set of behaviors for all current boids*/
   def useDefaultForAll() {
     boids.foreach(_.clearBehaviors())
     for(beh <- defaultBeh) {
@@ -72,17 +73,17 @@ class Simulation(val width: Int, val height: Int) {
     boids += b
   }
   
-  /*Move simulation along by one turn*/
+  /*Move simulation along by one turn. If positions are not looped,
+   *boids that are outside the simulation area are removed.*/
   def step() {
     if(!loopPositions) {
       boids --= boids.filterNot(x => (x.getPos.x >= 0 && x.getPos.x <= width) && (x.getPos.y >= 0 && x.getPos.y <= height))
     }
-    boids.foreach(_.act(this))  //FIXME: Nullptr?
+    boids.foreach(_.act(this))
     boids.foreach(_.move(this))
-    //println(defaultBeh)
   }
   
-  /*Draw the simulation state on the given SimSpace*/
+  /*Draw the simulation state*/
   def draw(g: Graphics2D) {
     boids.foreach(_.draw(g))
     obstacles.foreach(_.draw(g))

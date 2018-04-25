@@ -16,8 +16,7 @@ class Boid(p: Vec, v: Vec, o: Vec) extends SimComponent(p) {
   val maxForce = 80.0
   val minSpeed = 1.0  //FIXME: Having minSpeed causes orbiting around target when using Seek
   val maxSpeed = 10.0
-  val neighborhood = 40.0  //The radius of neighborhood
-  val neighborAngle = Pi / 2
+  val neighborhood = 80.0  //The radius of neighborhood
   
   /*Variables*/
   private var oldPosition = p
@@ -42,22 +41,25 @@ class Boid(p: Vec, v: Vec, o: Vec) extends SimComponent(p) {
     polyline
   }
   
+  /*Steering vector used for debugging*/
   def buildSteering: Rectangle2D = {
     val rect = new Rectangle2D.Double(0, 0, steeringForce.length * 5, 2)
     return rect
   }
   
+  /*Current velocity vector used for debugging*/
   def buildVelocity: Rectangle2D = {
     val rect = new Rectangle2D.Double(0, 0, velocity.length * 5, 2)
     return rect
   }
   
+  /*Desired velocity vector used for debugging*/
   def buildDesired: Rectangle2D = {
     val rect = new Rectangle2D.Double(0, 0, desiredVel.length * 5, 2)
     return rect
   }
   
-  /*Boid can see SimComponents within it's rectangular view.*/
+  /*Boid can see SimComponents within it's rectangular view. Used for obstacle avoidance.*/
   def buildSector: GeneralPath =  {
     
     val forward = getVel.normalized
@@ -79,6 +81,7 @@ class Boid(p: Vec, v: Vec, o: Vec) extends SimComponent(p) {
     
   }
   
+  /*Remove all behaviors*/
   def clearBehaviors() {
     behaviors.clear()
   }
@@ -90,12 +93,12 @@ class Boid(p: Vec, v: Vec, o: Vec) extends SimComponent(p) {
   
   /*Add a behavior of this type, if it doesn't exist*/
   def addBehavior(b: Behavior) {
-    if(!behaviors.exists(_.getType == b.getType)) {  //TODO: Seek types to different targets???
+    if(!behaviors.exists(_.getType == b.getType)) {
       behaviors += b
     }
   }
   
-  /*Manually set the position of this boid. Used when looping positions is simulation.*/
+  /*Manually set the position of this boid.*/
   def setPos(p: Vec): Unit = {
     oldPosition = p
   }
@@ -115,7 +118,8 @@ class Boid(p: Vec, v: Vec, o: Vec) extends SimComponent(p) {
     return oldPosition
   }
   
-  /*Move to the new position calculated by act()*/
+  /*Move to the new position calculated by act().
+   *If positions are looped, positions stay within simulation limits.*/
   def move(s: Simulation) {
     if(s.loopPositions) {
       
@@ -160,7 +164,7 @@ class Boid(p: Vec, v: Vec, o: Vec) extends SimComponent(p) {
   }
   
   /*Draw this component on the screen by moving it into place and then filling it in. 
-   *Finally reset the transform.*/
+   *Finally reset the transform. Vectors and sectors can be drawn too.*/
   def draw(g: Graphics2D) = {
  
     val old = g.getTransform()

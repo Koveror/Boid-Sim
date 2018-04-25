@@ -6,22 +6,19 @@ import java.awt.Toolkit
 import java.awt.Color
 import java.awt.geom.Ellipse2D
 
-/*View class is responsible for drawing the simulation on screen.*/
+/*View class is responsible for drawing the simulation and the GUI on screen.*/
 object View extends SimpleSwingApplication {
   
   //Define constants here
-  val buttonDim = 30
-  val simSpaceHeight = 600
-  val simSpaceWidth = 800
-  val height = simSpaceHeight
-  val width = buttonDim + simSpaceWidth + buttonDim
+  val height = 600
+  val width = 800
   val refreshRate = 16  //6ms
   val sim = new Simulation(width, height)
   
   //The addMode variable is controlled by the GUI.
   var addMode = 0
   
-  //Main frame contains all the other components
+  //Main frame contains all the components
   def top = new MainFrame {
     
     title = "Boid-Sim"
@@ -45,10 +42,11 @@ object View extends SimpleSwingApplication {
       }
       
     }
-
+    
+    //Create the menubar using the GUI object
     val menubar = GUI.createMenuBar()
     
-    //Add components to the window
+    //Add simSpace and menubar to the window
     contents = new BorderPanel {
       layout(menubar) = North
       layout(simSpace) = Center
@@ -56,7 +54,6 @@ object View extends SimpleSwingApplication {
     
     //Listen to user input here
     listenTo(simSpace.mouse.clicks)
-    listenTo(simSpace.keys)
     listenTo(menubar)
     
     reactions += {

@@ -6,17 +6,17 @@ import scala.math._
  *based on the current status of the simulation.*/
 abstract class Behavior {
   
-  /*Each behavior gives a unique steering force that dictates which way the behavior wants to take the boid.
-   * Steering forces are added to the current velocity of a boid*/
+  /*Each behavior gives a unique steering force that dictates which direction the behavior wants to take the boid.
+   *Steering forces are added to the current velocity of a boid after they've been divided by their mass.*/
   def getSteeringVector(s: Simulation, b: Boid): Vec
   
-  /*Each behavior has a unique integer value, which makes comparing easy*/
+  /*Each behavior has a unique integer value, which makes comparing easy.*/
   def getType: Int
 }
 
+/*Seek behavior makes boids home in on the target*/
 class Seek(target: SimComponent, c: Double) extends Behavior {
-  
-  /*Seek behavior makes boids home in on the target*/
+ 
   def getSteeringVector(s: Simulation, b: Boid): Vec = {
     val desiredVel = (target.getPos - b.getPos).normalized * b.maxSpeed
     b.setDesired(desiredVel)
@@ -28,9 +28,9 @@ class Seek(target: SimComponent, c: Double) extends Behavior {
   def getType = 1
 }
 
+/*Flee behavior makes boids flee from the target*/
 class Flee(target: SimComponent, c: Double) extends Behavior {
   
-  /*Flee behavior makes boids flee from the target*/
   def getSteeringVector(s: Simulation, b: Boid): Vec = {
     val desiredVel = (b.getPos - target.getPos).normalized * b.maxSpeed
     val steering = desiredVel - b.getVel
@@ -41,9 +41,9 @@ class Flee(target: SimComponent, c: Double) extends Behavior {
   def getType = 2
 }
 
+/*Cohesion makes boids seek towards the center of their group*/
 class Cohesion extends Behavior {
-  
-  /*Cohesion makes boids seek towards the center of their group*/
+ 
   def getSteeringVector(s: Simulation, b: Boid): Vec = {
     val coefficient = 0.5
     val allBoids = s.boids
@@ -62,12 +62,12 @@ class Cohesion extends Behavior {
   def getType = 3
 }
 
+/*Separation behavior makes boid keep distance to nearby boids.*/
 class Separation extends Behavior {
-  
-  /*Separation behavior makes boid keep distance to nearby boids.*/
+ 
   def getSteeringVector(s: Simulation, b: Boid): Vec = {
     
-    val scalar = 40.0  //Make the behavior more intense with a coefficient
+    val coefficient = 40.0  //Make the behavior more intense with a coefficient
     val allBoids = s.boids
     val otherBoids = allBoids - b
     val nearbyBoids = otherBoids.filter(x => (x.getPos - b.getPos).length < b.neighborhood)
@@ -75,7 +75,7 @@ class Separation extends Behavior {
     val steeringVectors = for {
       boid <- nearbyBoids
       val offsetVector = (b.getPos - boid.getPos).normalized
-      val weight = 1.0 * scalar / max(0.00000001,(b.getPos - boid.getPos).length)
+      val weight = 1.0 * coefficient / max(0.00000001,(b.getPos - boid.getPos).length)
       val steeringVector = offsetVector * weight
     } yield steeringVector
     
@@ -86,10 +86,9 @@ class Separation extends Behavior {
   def getType = 4
 }
 
-
+/*Aligment makes boid face the same direction as the rest of the group*/
 class Alignment extends Behavior {
   
-  /*Aligment makes boid face the same direction as the rest of the group*/
   def getSteeringVector(s: Simulation, b: Boid): Vec = {
     
     val coefficient = 2.0
@@ -110,9 +109,9 @@ class Alignment extends Behavior {
   def getType = 5
 }
 
+/*Obstacle avoidance makes boids flee from obstacles in front, avoiding them*/
 class ObstacleAvoidance extends Behavior {
   
-  /*Obstacle avoidance makes boids flee from obstacles in front, avoiding them*/
   def getSteeringVector(s: Simulation, b: Boid): Vec = {
     val coefficient = 3.0
     val obstaclesInSight = s.obstacles.filter(x => b.buildSector.contains(x.getPos.x, x.getPos.y))
@@ -129,6 +128,7 @@ class ObstacleAvoidance extends Behavior {
   def getType = 6
 }
 
+/*Target seeking behavior makes the boid seek towards the simulation target, if there is one.*/
 class TargetSeeking extends Behavior {
   def getSteeringVector(s: Simulation, b: Boid): Vec = {
     val coefficient = 1.0
